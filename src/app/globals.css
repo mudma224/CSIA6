@@ -1,0 +1,74 @@
+@import "tailwindcss";
+
+/* Design values transcribed from design ZIP: Field_Shift_Design_System/styles.css */
+:root {
+  --forest: #193D2B;
+  --forest-deep: #102B20;
+  --leaf: #39794F;
+  --leaf-hover: #2E6743;
+  --sage: #A8C98A;
+  --mint: #E6F1DD;
+  --canvas: #F5F6EF;
+  --cream: #FFFDF8;
+  --white: #FFFFFF;
+  --ink: #172C22;
+  --muted: #64756A;
+  --border: #E1E8DA;
+  --harvest: #D9A44B;
+  --water: #DCECE6;
+  --danger: #B34738;
+  --radius-sm: 12px;
+  --radius-md: 16px;
+  --radius-lg: 20px;
+  --radius-xl: 28px;
+  --radius-pill: 999px;
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-10: 40px;
+  --space-12: 48px;
+  --space-16: 64px;
+  --shadow-soft: 0 12px 45px rgba(25, 61, 43, .06);
+  --shadow-card: 0 2px 10px rgba(20, 51, 34, .04);
+  --font-ui: "Inter", "Segoe UI", Arial, sans-serif;
+  --font-ar: "Noto Sans Arabic", Tahoma, Arial, sans-serif;
+}
+
+@theme inline {
+  --color-forest: var(--forest);
+  --color-forest-deep: var(--forest-deep);
+  --color-leaf: var(--leaf);
+  --color-sage: var(--sage);
+  --color-mint: var(--mint);
+  --color-canvas: var(--canvas);
+  --color-cream: var(--cream);
+  --color-ink: var(--ink);
+  --color-muted: var(--muted);
+  --color-harvest: var(--harvest);
+  --color-danger: var(--danger);
+  --font-sans: var(--font-ui);
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: var(--canvas);
+  color: var(--ink);
+  font-family: var(--font-ui);
+  font-size: 16px;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+}
+html[lang="ary"] body { font-family: var(--font-ar); }
+button, input, textarea, select { font: inherit; }
+a { color: inherit; }
+:focus-visible { outline: 3px solid var(--harvest); outline-offset: 3px; }
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+}
