@@ -1047,6 +1047,8 @@ M3's **source-checked** data originally included two approximate mapped-feature 
 
 **Handoff acceptance:** after M5 integration, record the actual `origin/main` SHA, the successful CI run, code/guide parity, manual acceptance results/limitations, and these open decisions. Share `docs/frontend/milestone-M5/M5-DEV2.md` and the real repository commit with the backend/data-science contributors; **do not imply that pending approvals have occurred**.
 
+- **`.nvmrc` encoding fix:** normalized `.nvmrc` to plain ASCII/UTF-8 without BOM (`22.22.2`) so `actions/setup-node@v4` parses `node-version-file` cleanly on Ubuntu runners.
+
 ## 12. Commit verified M5 feature work — no Pull Request
 
 **Gate:** targeted tests, full suite, lint, TS, build, browser E2E and required manual checks must be completed and recorded; no blocking FAIL and no false PASS. The guide must exactly match any changed code. **Do not** commit screenshots, Playwright reports, `.env` files, real phone or field-location data.
