@@ -6,10 +6,12 @@ import { ActionLink } from "@/components/m1/ActionLink";
 import { Card } from "@/components/ui/Card";
 import { useLocale } from "@/i18n/LocaleProvider";
 import { useM2Text } from "@/i18n/m2Messages";
+import { useM3Text } from "@/i18n/m3Messages";
 
 export function HomeScreen() {
   const { t } = useLocale();
   const tx = useM2Text();
+  const t3 = useM3Text();
   return (
     <div className="space-y-7">
       <header className="space-y-3">
@@ -36,7 +38,7 @@ export function HomeScreen() {
         <Link href="/map" className="min-h-44 rounded-[var(--radius-lg)] border border-[var(--border)] bg-white p-5 shadow-[var(--shadow-card)] hover:border-leaf">
           <MapPinned aria-hidden="true" className="text-leaf" />
           <h2 className="mt-3 text-xl font-bold text-forest">{t("mapTitle")}</h2>
-          <p className="mt-1 text-sm text-muted">{t("mapComing")}</p>
+          <p className="mt-1 text-sm text-muted">{t3("homeMapAvailable")}</p>
           <ArrowUpRight className="mt-3 text-leaf" aria-hidden="true" />
         </Link>
         <Link href="/community" className="min-h-44 rounded-[var(--radius-lg)] border border-[var(--border)] bg-white p-5 shadow-[var(--shadow-card)] hover:border-leaf sm:col-span-2">
