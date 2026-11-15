@@ -1,53 +1,46 @@
-"""Private science service — flaht bladi D2 handoff (contract v0.2, PROPOSED).
+"""Private science service — flaht bladi D2 handoff (contract v0.2, G0-approved).
 
-Endpoints:
-  GET  /health                          liveness only
-  GET  /ready                           engine + artifact-hash verification
-  POST /internal/v1/recommendations     rule-engine scoring, contract v0.2 union
+Two run modes from the SAME code:
+  - Local/dev (default): uvicorn on 127.0.0.1:8001, routes at "/" — exactly as before.
+  - Vercel serverless: api/science.py builds the same app with additional prefixed
+    routes ("" and "/api/science") so any runtime path convention works.
 
-This is the PRIVATE science service (BFF wiring stays blocked until the G0
-decisions C04-C10/C14 are approved - see docs/integration/DS-POSITIONS-G0-C04-C14.md).
-No browser access, no secrets, no NASA fetching, no user identity logic.
+Shared bearer token: when the SCIENCE_TOKEN or MODEL_API_TOKEN env var is set,
+/ready and the recommendations route require `Authorization: Bearer <token>`
+(/health stays an open liveness probe). Unset (default local) = no gate.
+No browser access, no user identity logic, no NASA fetching, no secrets in repo.
 """
 from __future__ import annotations
 
-import sys
-from pathlib import Path
+import os
+from collections.abc import Sequence
 
-from fastapi import FastAPI, Request
+from fastapi import Depends, FastAPI, Request
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
 
-sys.path.insert(0, str(Path(__file__).resolve().parent))  # package imports via app dir
 from app.engine_adapter import readiness  # noqa: E402
 from app.schema import RecommendationsRequest  # noqa: E402
 from engine.engine import recommend  # noqa: E402
 
-app = FastAPI(title="flaht bladi science service", version="0.2.0-proposed")
+TITLE = "flaht bladi science service"
+VERSION = "0.2.0-approved"
 
 
-@app.get("/health")
-def health() -> dict:
-    """Liveness only - never a claim that scoring is usable."""
-    return {"status": "alive"}
+def _expected_token() -> str | None:
+    return os.environ.get("SCIENCE_TOKEN") or os.environ.get("MODEL_API_TOKEN") or None
 
 
-@app.get("/ready")
-def ready() -> JSONResponse:
-    """200 only when the engine answers AND every manifest artifact hash matches."""
-    r = readiness()
-    if not r["ready"]:
-        return JSONResponse(status_code=503, content={
-            "status": "model_unavailable",
-            "reason": "artifact_hash_mismatch" if not r["artifacts"]["ok"] else "engine_self_test_failed",
-            "detail": {"artifacts": r["artifacts"], "self_test": r["self_test"]},
-        })
-    return JSONResponse(status_code=200, content={
-        "status": "ready",
-        "engine_version": r["engine_version"],
-        "artifacts_checked": r["artifacts"]["checked"],
-        "self_test": r["self_test"]["status"],
-    })
+def verify_token(request: Request) -> None:
+    """Shared-secret gate, enforced only when a token is configured."""
+    expected = _expected_token()
+    if not expected:
+        return
+    supplied = request.headers.get("Authorization", "")
+    if supplied != f"Bearer {expected}":
+        from fastapi import HTTPException
+
+        raise HTTPException(status_code=401, detail={"code": "INVALID_TOKEN"})
 
 
 def _union_error(fields: list[dict]) -> dict:
@@ -55,28 +48,59 @@ def _union_error(fields: list[dict]) -> dict:
             "error": {"code": "VALIDATION_ERROR", "fields": fields}}
 
 
-@app.exception_handler(RequestValidationError)
-async def validation_handler(_: Request, exc: RequestValidationError) -> JSONResponse:
-    """Map Pydantic errors into the contract's field-coded request_error union (B0 §5)."""
-    fields = []
-    for e in exc.errors():
-        loc = ".".join(str(p) for p in e.get("loc", []) if p != "body")
-        fields.append({"path": loc or "$", "code": e.get("type", "INVALID").upper()})
-    return JSONResponse(status_code=422, content=_union_error(fields))
+def create_app(prefixes: Sequence[str] = ("",)) -> FastAPI:
+    """Build the science app; routes are registered under every given prefix."""
+    app = FastAPI(title=TITLE, version=VERSION)
+
+    @app.exception_handler(RequestValidationError)
+    async def validation_handler(_: Request, exc: RequestValidationError) -> JSONResponse:
+        fields = []
+        for e in exc.errors():
+            loc = ".".join(str(p) for p in e.get("loc", []) if p != "body")
+            fields.append({"path": loc or "$", "code": e.get("type", "INVALID").upper()})
+        return JSONResponse(status_code=422, content=_union_error(fields))
+
+    def health() -> dict:
+        """Liveness only - never a claim that scoring is usable."""
+        return {"status": "alive"}
+
+    def ready(_: None = Depends(verify_token)) -> JSONResponse:
+        """200 only when the engine answers AND every manifest artifact hash matches."""
+        r = readiness()
+        if not r["ready"]:
+            return JSONResponse(status_code=503, content={
+                "status": "model_unavailable",
+                "reason": ("artifact_hash_mismatch" if not r["artifacts"]["ok"]
+                           else "engine_self_test_failed"),
+                "detail": {"artifacts": r["artifacts"], "self_test": r["self_test"]},
+            })
+        return JSONResponse(status_code=200, content={
+            "status": "ready",
+            "engine_version": r["engine_version"],
+            "artifacts_checked": r["artifacts"]["checked"],
+            "self_test": r["self_test"]["status"],
+        })
+
+    def recommendations(req: RecommendationsRequest,
+                        _: None = Depends(verify_token)) -> JSONResponse:
+        body = req.model_dump(exclude_none=False)
+        result = recommend({
+            "parcel": body["parcel"],
+            "history": body["history"],
+            "planned_season": body["planned_season"],
+            "farmer_priorities": body["farmer_priorities"],
+            "baseline": body["baseline"],
+        })
+        if result["status"] == "request_error":
+            return JSONResponse(status_code=422, content=result)
+        return JSONResponse(status_code=200, content=result)
+
+    for prefix in prefixes:
+        app.get(f"{prefix}/health")(health)
+        app.get(f"{prefix}/ready")(ready)
+        app.post(f"{prefix}/internal/v1/recommendations")(recommendations)
+    return app
 
 
-@app.post("/internal/v1/recommendations")
-def recommendations(req: RecommendationsRequest) -> JSONResponse:
-    body = req.model_dump(exclude_none=False)
-    # Pydantic already enforced enums/season grammar; the engine owns vocabulary
-    # resolution (UNRECOGNIZED_CROP is field-coded by the engine itself).
-    result = recommend({
-        "parcel": body["parcel"],
-        "history": body["history"],
-        "planned_season": body["planned_season"],
-        "farmer_priorities": body["farmer_priorities"],
-        "baseline": body["baseline"],
-    })
-    if result["status"] == "request_error":
-        return JSONResponse(status_code=422, content=result)
-    return JSONResponse(status_code=200, content=result)
+# Local default: routes at "/" (uvicorn app.main:app --app-dir services/model_api).
+app = create_app()

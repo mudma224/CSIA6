@@ -1,0 +1,12 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "rewrites": [
+    { "source": "/api/science", "destination": "/api/science.py" },
+    { "source": "/api/science/:path*", "destination": "/api/science.py" }
+  ],
+  "functions": {
+    "api/science.py": {
+      "includeFiles": "science/engine/**,src/data/**,services/model_api/app/**,services/model_api/artifacts/**"
+    }
+  }
+}

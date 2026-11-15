@@ -4,6 +4,32 @@ Brief dated records of non-obvious tradeoffs (documentation-strategy §1). Newes
 
 ---
 
+## 2026-11-15 — 100 % free online deployment: the science service ships as a Vercel Python function
+
+**Decision:** the deployment target is Vercel (free Hobby) with BOTH runtimes in one project:
+the Next.js app + BFF as usual, and the rule-engine service as `api/science.py` (Python
+serverless function, routes dual-registered at `/` and `/api/science` via the `create_app()`
+factory, `vercel.json` rewrites + `includeFiles` for `science/engine`, `src/data` and the
+service package). Readiness in serverless mode uses `manifest.serverless.json` (rule-engine
+files only); the joblib observers remain local-run artifacts — their `/ready` hash gate stays
+on the local uvicorn run, and their evidence-only role is unchanged. On Vercel the BFF resolves
+the science function at the deployment's own origin (`VERCEL=1`, same-origin HTTPS); the
+loopback default is untouched locally. A shared bearer token (`MODEL_API_TOKEN`, read by both
+the Node BFF and the Python function) is optional in local dev and recommended in production.
+
+**Rationale:** team request for a 100 % free online deployment without cold-start risk for the
+live demo. A second free host (HF Spaces / Render free) would introduce 30–60 s wake-ups; a
+same-origin serverless function keeps the science endpoint off the public internet behind the
+BFF's rate limit and the shared token while costing nothing extra.
+
+**Consequence:** `services/model_api/app/main.py` now exposes `create_app(prefixes)` (the
+module-level `app` keeps the local uvicorn contract, so `--app-dir services/model_api` runs
+unchanged); `api/science.py` + `api/requirements.txt` + `vercel.json` are new; the token gate
+is enforced only when a token env var is set. Covered by `services/model_api/tests/test_deployment.py`
+(35 pytest passing) and the gateway/override vitest cases (125 passing).
+
+---
+
 ## 2026-11-15 — G0 decisions approved; BFF + recommendation UI wired (B3 implementation)
 
 **Decision:** the team approved the DS positions C04–C10/C14 (see `docs/integration/DS-POSITIONS-G0-C04-C14.md`, now APPROVED). The BFF and the real recommendation UI were implemented the same day: `POST /api/v1/recommendations` (Next.js route handler, server-only) maps the M2 form's native values to the science contract (C04 matrix), calls the private FastAPI service through an allowlisted, timed-out, no-redirect gateway, runtime-validates the response union, and `/rotation` renders the honest statuses. The M2 crop step now offers the validated vocabulary (crops.v1.json, "Not declared" default) instead of free text, and seasons follow the campaign grammar.

@@ -109,3 +109,30 @@ are evidence-only artifacts whose hashes are verified at service startup.
 
 Sequential owner order: DEV1 M1→M2→M3; DEV2 M4→M5. Feature branches merge **locally** into a
 tested `main`, which is then pushed. No Pull Requests.
+
+## Deploy online (100 % free — Vercel)
+
+The repo is **zero-config deployable** to Vercel: the Next.js app and the science engine ship
+as functions of the SAME project (the BFF resolves the science function at the deployment's
+own origin — no second platform, no cold-start pain).
+
+1. Push this repo to GitHub (already done: `github.com/mudma224/CSIA6`).
+2. On [vercel.com](https://vercel.com) (free Hobby account): **Add New… → Project** → import
+   `mudma224/CSIA6` → **Deploy** (accept the detected Next.js settings — no configuration needed).
+3. Recommended hardening (2 minutes): in Project → Settings → Environment Variables, add
+   `MODEL_API_TOKEN` with a random value (e.g. `python -c "import secrets; print(secrets.token_hex(32))"`)
+   for Production+Preview+Development. One variable covers both sides: the BFF sends it as the
+   bearer and `api/science.py` enforces it. Redeploy after adding it.
+4. Verify: `https://<your-app>.vercel.app/api/science/ready` → `{"status":"ready",...}` — then
+   open the app, describe a parcel, and get real ranked options.
+
+What ships server-side on Vercel:
+- Node functions: the app pages + `POST /api/v1/recommendations` (BFF: validation, rate limit,
+  same-origin call to the science function, honest status mapping).
+- Python function (`api/science.py`): the validated rule engine + `/health`, `/ready` (hash
+  verification via `manifest.serverless.json`) and the recommendations route, exposed under
+  `/api/science/*` (see `vercel.json` rewrites + `includeFiles`).
+- The ML observers (joblibs) stay local evidence artifacts: they are hash-verified on the
+  local run and are **not** part of the serverless bundle (evidence-only role, per contract).
+- Local development is unchanged (`uvicorn :8001` + `npm run dev`); `MODEL_API_BASE_URL` still
+  points the BFF wherever you want, and the loopback HTTPS exemption never applies off-localhost.
