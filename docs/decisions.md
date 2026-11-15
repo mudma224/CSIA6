@@ -4,6 +4,16 @@ Brief dated records of non-obvious tradeoffs (documentation-strategy §1). Newes
 
 ---
 
+## 2026-11-15 — Internal data-verification page at /data-preview
+
+**Decision:** the committed data files are rendered inside the app at a standalone route (/data-preview) so the team validates deliverables in the running frontend, and a Leaflet dependency was added for the map view.
+
+**Rationale:** requested by the team on 2026-11-15 — validating data deliverables inside the real app is stronger than validating them in a standalone static page. The route is internal: not linked from farmer navigation, clearly badged, and it renders data only (no recommendation logic).
+
+**Consequence:** when milestones M2 (parcel form) and M3 (map) are implemented, this page is either removed or reduced to a data-file index; the Leaflet map work is a preview, not the M3 deliverable. Leaflet 1.9.4 + @types/leaflet added to package.json (exact-pinned).
+
+---
+
 ## 2026-11-15 — Crop names in Modern Standard Arabic (فصحى), not Darija
 
 **Decision:** The crop vocabulary (`src/data/crops.v1.json`) carries English + Modern Standard Arabic names (e.g., القمح, البرسيم الحجازي, بنجر السكر). Darija is NOT used for crop-name data fields.
