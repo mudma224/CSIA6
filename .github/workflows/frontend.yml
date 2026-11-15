@@ -1,10 +1,11 @@
 name: Frontend checks
 
 on:
-  pull_request:
-    branches: [main, integration/m0]
   push:
-    branches: [integration/m0]
+    branches:
+      - main
+      - "feature/**"
+  workflow_dispatch:
 
 jobs:
   checks:
