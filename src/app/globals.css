@@ -67,7 +67,6 @@ body {
 }
 html[lang="ary"] body { font-family: var(--font-ar); }
 button, input, textarea, select { font: inherit; }
-a { color: inherit; }
 :focus-visible { outline: 3px solid var(--harvest); outline-offset: 3px; }
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }

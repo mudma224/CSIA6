@@ -1,66 +1,46 @@
 # flaht bladi — Frontend Milestone Guide
 
-**Repository:** `CSIA6` (M0 repository initialized; final merge SHA to be recorded after merge)  
-**Team:** 2 frontend developers; a coordinator (may be one of them) prepares each milestone's execution guides  
-**Status:** Reference roadmap — not an execution guide  
-**Source of requirements:** `docs/01-cahier-des-charges.md` (v1.1)
+**Repository:** `CSIA6` · **Team:** DEV1 + DEV2 · **Baseline:** M0 completed and integrated into `main` (as reported by the team)  
+**Status:** Roadmap and ownership; execution details live in the current milestone guide. **Workflow revised:** 15 November 2026.
 
-## 1. Purpose and boundaries
+## 1. Scope and design boundaries
 
-This document defines **what to build and in what order**. The separate project that generates milestone execution guides must read this document alongside `instructions.md`, `system-design.md`, `documentation-strategy.md`, the cahier des charges, the approved design-system source, and the **actual latest merged `main`**. It must generate **two** developer guides for **one milestone only**, with full code, exact commands, tests, expected outcomes, file ownership and PR instructions.
+Build the **frontend first** using the M0 Next.js/React/TypeScript/Tailwind foundation and the provided design ZIP's visual tokens (never copy its example screens). Keep `en` (LTR) and `ary` (Arabic-script Darija, RTL), accessible 44px targets, usable audio text fallback and mobile-first design. Backend routes, APIs, real SMS login, databases, domain/agronomic calculations and fabricated geographic/scientific data are forbidden during frontend milestones. **Crop recommendations stay explicitly unavailable** until a validated, approved data-science handoff; the proposed v0.1 contract is not implementation authority.
 
-**Frontend only.** Develop navigation, screens, UI state, client-side interaction/validation, accessible audio, localization and verified map visualization. Do **not** implement server endpoints, databases, authentication providers, permissions/authorization logic, data ingestion, agronomic calculations, recommendation algorithms or model/API clients. The **recommendation feature is not built now**: display only a bilingual, explicitly unavailable/coming-later placeholder; no comparison cards, fake scores or sample recommendations.
+## 2. Fixed responsibilities and order
 
-## 2. Mandatory UX and design requirements
+Development is **sequential, not parallel**. Exactly one milestone feature branch is under active development at a time; no next milestone starts until its predecessor has passed tests, merged locally into `main`, and been pushed to GitHub.
 
-- The provided HTML/CSS design system determines colors, typography, spacing, component styling and tone **only**; its sample pages are not the app specification. Use the cahier des charges for actual screens.
-- Mobile first, large touch targets (at least 44 × 44 px), readable type, low text density, crop image cards, tapping over typing, clear back/continue actions, an “I don't know” option where appropriate.
-- Darija in Arabic script (`ary`, RTL) and English (`en`, LTR); choose language **before** phone/demo entry, persist it locally, and make it changeable without losing form progress. Translate controls, validation, empty states and map labels.
-- Audio wherever it *meaningfully assists*: reusable tap-to-play control, short prerecorded clips in the selected language, visible text fallback, pause/replay, file-missing handling. First visit: large speaker with green pulsing rings, opt-in tap, onboarding instruction; **never autoplay**. Respect reduced-motion preference. Do not invent prerecorded assets: record or obtain reviewed speech files and document their source.
-- Data and map markers must be source-verified. No fictitious irrigation polygons, suppliers, prices, rainfall, yields, recommendations or live statuses.
+| Order | Milestone | Sole implementation owner | Exact feature branch | Deliverable / gate |
+|---|---|---|---|---|
+| Done | M0 — Foundation | Completed by both developers | Historical M0 branches | Baseline is in `main`; retain M0 guides as historical records |
+| 1 | **M1 — Welcome, access & navigation** | **DEV1** | `feature/m1-dev1` | Bilingual welcome/first-visit audio fallback, phone-format demo UI, dashboard, responsive navigation, honest profile and unavailable destinations |
+| 2 | **M2 — Parcel journey & deferred rotation** | **DEV1** | `feature/m2-dev1` | Guided parcel inputs, location-selection UI, client-side usability validation, preserved local form state; recommendation placeholder only |
+| 3 | **M3 — Interactive Tadla mapping** | **DEV1** | `feature/m3-dev1` | Map/tiles/attribution, verified feature inventory, filters, popups and source/precision labels; no invented geography |
+| 4 | **M4 — Community, calendar & sharing UI** | **DEV2** | `feature/m4-dev2` | Labeled local/demo community interactions, vetted calendar or unavailable state, privacy-safe copying/sharing |
+| 5 | **M5 — Frontend hardening & API handoff** | **DEV2** | `feature/m5-dev2` | End-to-end farmer journey, accessibility/RTL/audio/map audits, empty/error checks, documented future API boundaries |
 
-## 3. Shared development protocol (every milestone)
+Ownership includes implementation, tests and the milestone execution guide. DEV1 may hand off to DEV2 **only after M3 is pushed and validated on `main`**. Avoid editing unfinished milestone code on another branch.
 
-1. Coordinator checks that previous milestone is merged into protected `main`, test status is documented, and code/docs match; for M0, initialize an empty `CSIA6` repository and upload reference docs and authorized design assets.
-2. Coordinator generates exactly **two** coordinated guides from that baseline: `docs/frontend/milestone-MX/MX-DEV1.md` and `MX-DEV2.md`. Each guide states prerequisites, owned files, complete runnable source snippets, exact npm/Git commands, automated/manual checks, and acceptance criteria. Do not generate subsequent milestones yet.
-3. Integration owner creates `integration/mX` from the current `main`. Both developers branch from that integration baseline **after any mandatory shared bootstrap passes**. If the generated M0 guides require a DEV1-only bootstrap, DEV2 waits only for that bootstrap PR, not for unrelated DEV1 work.
-4. Developers implement only assigned files on `feature/mX-dev1-*` and `feature/mX-dev2-*`; test locally and synchronize their guides with changes. PRs target `integration/mX`, not `main`.
-5. Integration owner reviews, merges, resolves conflicts, runs full milestone tests, and records results. Failed check = no promotion.
-6. Open a reviewed PR `integration/mX` → `main`; merge only when tests and documentation pass. Record the resulting commit SHA. **Only then** generate the next pair of guides.
+## 3. Local branch integration — no Pull Requests
 
-## 4. Milestones and proposed two-person split
+For each milestone `MX`:
 
-The splits below are provisional. The milestone guide generator may balance effort after inspecting the actual code, but may not move backend work or recommendation logic into frontend tasks. Each milestone must deliver useful work for both developers and avoid shared-file collisions.
+1. Verify `main` is clean and current: `git switch main && git pull --ff-only origin main`; capture `git rev-parse HEAD`.
+2. Create **only that milestone's exact feature branch** from this baseline (`git switch -c feature/mX-devY`, using lowercase `m` and the assigned number/owner).
+3. Implement exclusively frontend UI, tests and its **one** current execution guide; maintain code–guide synchronization with every change. Update shared architecture docs only where facts change.
+4. Run documented task-level checks, `npm run lint`, `npm run typecheck`, `npm run test`, `npm run build` and manual bilingual/mobile/audio checks. Commit all source and documentation together; keep feature changes off `main`.
+5. Merge **locally** using `git switch main`, `git pull --ff-only origin main`, `git merge --no-ff --no-commit feature/mX-devY`; rerun full checks on this candidate integration state; commit the merge only when all required gates pass; then `git push origin main`.
+6. Confirm `origin/main` has the promoted SHA; record actual results and short handoff. **Only now** begin the next milestone.
 
-| Milestone | DEV 1 ownership | DEV 2 ownership | Integration acceptance gate |
-|---|---|---|---|
-| **M0 — Repository & shared foundation** | Initialize Next.js/TypeScript/Tailwind, base app shell, design tokens and global styles | Test setup, shared UI primitives, localization/audio infrastructure (after bootstrap) | Clean install, lint, typecheck, tests, build; visual tokens, RTL and audio component smoke checks |
-| **M1 — Welcome, access & navigation** | First-visit speaker onboarding, bilingual welcome, phone-first **demo UI**; no real OTP | Dashboard, responsive navigation, profile/language preference UI | Welcome → language → demo entry → navigation works in both locales, audio only on tap |
-| **M2 — Parcel journey & deferred rotation** | Guided parcel form, crop image choices, irrigation/season/area inputs, client-side usability validation | Parcel location selection UI and bilingual **recommendations unavailable** page; optional local demo state display | A farmer can complete the parcel UI, encounter honest unavailable message, go back without losing values; no recommendations computed or rendered |
-| **M3 — Interactive Tadla mapping** | React Leaflet map page, base map, attribution, zoom/pan, responsive container | Verified GeoJSON/POI inventory, filters, accessible popup/location cards, empty categories | Sources/coordinates verified, map/filter/popup tests pass; no invented sector polygons |
-| **M4 — Community, calendar & sharing UI** | Community feed filters, form UI for experiences/sales/partnerships, local demo interactions | Crop-calendar UI using **only vetted static content** or unavailable state; external contact/copy sharing and Facebook link-sharing UX | Correct demo labeling, no real persistence or private-post claims; no fake public URLs; safe sharing and calendar missing-data handling |
-| **M5 — Frontend hardening & handoff** | Farmer-journey end-to-end tests, small-screen UX, keyboard accessibility and error/empty states | Darija/English & RTL audit, audio regression, map testing, documentation and future API seam audit | Full tests + production build; 2-browser/mobile smoke review; audited docs; reviewed merge into `main` |
+No `integration/mX` branches, no PR creation/reviews, no direct feature implementation on `main`, no force push. If a GitHub rule still **requires PRs or rejects local merge pushes**, a repository administrator must update the rule to permit this agreed workflow **before** the push. Keep non-PR protections where compatible (e.g. block force/deletion; use CI on `push` to `main`). Never bypass a failed test.
 
-**P0 first:** If 48 hours are insufficient, simplify M4 and other P1 work before cutting reliable M0–M3 UX/tests. Both developers may contribute to the same milestone but should not edit the same files without explicit coordination.
+## 4. Current execution-guide policy
 
-## 5. Milestone deliverable template
+Generate **one guide for the active milestone and sole owner**, based on the checked-out, merged `main`, the cahier des charges, the four shared docs, design ZIP and pending data-science boundary. Initially: `docs/frontend/milestone-M1/M1-DEV1.md` only. Do not generate M2–M5 guides ahead of their turn. Each guide includes exact file paths, **complete implementation code**, dependency handling, commands, tests, expected results, manual verification, documentation synchronization and local-merge instructions. The old M0 guides remain untouched historical records of the process used at that time.
 
-Each generated milestone package must contain:
+## 5. Acceptance, time pressure and future handoff
 
-- `MX-DEV1.md` and `MX-DEV2.md` — actual **execution** guides, not generic Claude prompts.
-- A short integration checklist appended to the appropriate guide or a small milestone README: baseline commit, merge order, exact full-suite commands and human acceptance checks.
-- Exact files/paths, full code, package changes, tests and expected outputs for that milestone; no assumptions about files that do not yet exist.
-- A mini handoff note specifying **UI-only state**, source and limitations of any demo data, and future service boundary (`TODO: backend integration`), without speculative API shapes.
-- Both developers' PRs including concise documentation changes required by `documentation-strategy.md`.
+For every milestone: required screens/routes work without backend, app copy honestly distinguishes local/demo and unavailable states, both locales and directions work, keyboard focus/mobile layout remain usable, relevant tests/build succeed, and the **committed guide matches every affected file**. Missing manual verification is `NOT VERIFIED`, not `PASS`. On conflict/failure, keep remote `main` stable and fix the feature branch.
 
-## 6. Definition of done
-
-- Assigned functionality works without backend services and does not imply fake production capability.
-- Both locales, direction, audio behavior, mobile layout and accessibility checks relevant to the milestone pass.
-- Unit/component tests and smoke checks relevant to changed code pass; lint, TypeScript, and production build pass on integrated branch.
-- Exact guide contents reflect code changes (or review explicitly certifies an unchanged guide remains accurate); PR review and milestone integration checklist completed.
-- `integration/mX` merges into `main` via approved PR; next milestone starts only after that merge.
-
-## 7. Future handoff — after all frontend milestones
-
-Once the frontend is validated, document actual user inputs, UI states and data placeholders. After the data scientist delivers supported crops, model semantics, inputs, outputs and limits, collaboratively define and version backend API contracts. Only **then** implement backend/auth/storage and recommendation behavior, followed by real integration tests. This later phase is outside the frontend milestones above.
+Prioritize P0 over P1 if the hackathon timeline tightens. After M5, summarize actual UI inputs, local state, missing persistence/security, verified data provenance and approved audio assets; define backend/model API contracts **only after** the relevant handoff. The M1 guide does not authorize creating M2–M5 functionality.
