@@ -1,0 +1,96 @@
+{
+  "table_version": "rules-table 0.2.0",
+  "review_status": "PROPOSED - every rule awaits agronomy SME signoff at G0; no rule generates a production claim before approval",
+  "scoring_model": "score = clip(100 + sum(scaled rule deltas), 0, 100); ranking score only, never a probability; blocking rules set score to 0 and exclude the candidate",
+  "priority_weighting": "factor 0-3 -> weight 0.5+0.5*f applied only to the rule group it names; absent -> 1.0 neutral with an explicit note",
+  "rules": [
+    {
+      "rule_id": "R-LEG-01",
+      "group": "soil_health",
+      "delta": 15,
+      "blocking": false,
+      "applies_to": "cereal candidates (wheat, maize) when history[0] is a fabaceae crop",
+      "expression": "if crop.family=='poaceae' and prev1.legume: +15",
+      "explanation_en": "legume predecessor supplies a nitrogen credit and rotation benefit to the following cereal",
+      "explanation_ary_pending_review": "المزروع البقولي اللي قبل كيعطي أزوت وميزة ديال الدورة للقمح اللي موراه",
+      "source": "Yigezu et al. 2019 (ICARDA): wheat after faba bean +20-36% vs continuous wheat/barley in Morocco; berseem N credit 33-224 kg N/ha (INRA-Morocco literature)"
+    },
+    {
+      "rule_id": "R-BRK-01",
+      "group": "soil_health",
+      "delta": -12,
+      "blocking": false,
+      "applies_to": "cereal candidates when history[0] is a cereal",
+      "expression": "if crop.family=='poaceae' and prev1.family=='poaceae': -12",
+      "explanation_en": "cereal after cereal: foliar and soil disease carry-over (septoria, fusarium) - break-crop effect",
+      "explanation_ary_pending_review": "القمح بعد القمح: خطر أمراض كتبقى فالأرض والبقايا (السيبتوريا والفيوزاريوم)",
+      "source": "Figueroa et al. 2017 (septoria ~15-20% annual wheat yield losses); GRDC/AHDB break-crop guidance (two-year breaks outperform one)"
+    },
+    {
+      "rule_id": "R-NEM-01",
+      "group": "soil_health",
+      "delta": -8,
+      "blocking": false,
+      "applies_to": "cereal candidates when BOTH history entries are cereals",
+      "expression": "if crop.family=='poaceae' and prev1 and prev2 both poaceae: -8 (stacks with R-BRK-01)",
+      "explanation_en": "continuous cereals build up cereal cyst nematodes documented in Moroccan wheat areas",
+      "explanation_ary_pending_review": "الحبوب وحدة مور وحدة كيكيّفو النيماتود ديال الحبوب اللي موثقين فالمغرب",
+      "source": "Mokrini et al. 2012 (first report Heterodera latipons, Morocco); Mokrini et al. 2021 (CCN/Pratylenchus status Morocco); Crop Protection Network (CCN worst under lacking rotation)"
+    },
+    {
+      "rule_id": "R-FAM-01",
+      "group": "soil_health",
+      "delta": -15,
+      "blocking": false,
+      "applies_to": "any candidate in the same botanical family as history[0] (except cereal-after-cereal, covered by R-BRK-01)",
+      "expression": "if crop.family==prev1.family and crop.family!='poaceae': -15",
+      "explanation_en": "same botanical family as the previous crop: shared pests and diseases - avoid repeating a family",
+      "explanation_ary_pending_review": "نفس العائلة النباتية مور مور: نفس الآفات والأمراض كيتقاسمو",
+      "source": "general plant-health rotation principle; crop-specific cases documented in R-BEET-01 / R-ONI-01"
+    },
+    {
+      "rule_id": "R-BEET-01",
+      "group": "soil_health",
+      "delta": -100,
+      "blocking": true,
+      "applies_to": "sugar_beet when history[0] or history[1] is a beet-family crop (amaranthaceae)",
+      "expression": "if crop=='sugar_beet' and (prev1 or prev2).family=='amaranthaceae': score=0, excluded (blocking)",
+      "explanation_en": "sugar beet after a beet-family crop: beet cyst nematode (Heterodera schachtii) - 3-5 year non-host break required",
+      "explanation_ary_pending_review": "بنجر مور البنجر: النيماتود ديال كيس البنجر - وقفة 3-5 سنوات بلا عائل مضيفة ضرورية",
+      "source": "Nebraska Extension G1906 (3-5 year rotation); PNW Plant Disease Handbook (3-6 years); non-host crops cut SBCN 40-60%/yr; UC IPM (max 2 beet years in 10)"
+    },
+    {
+      "rule_id": "R-ONI-01",
+      "group": "soil_health",
+      "delta": -30,
+      "blocking": false,
+      "applies_to": "onion when history[0] is an allium-family crop (amaryllidaceae)",
+      "expression": "if crop=='onion' and prev1.family=='amaryllidaceae': -30",
+      "explanation_en": "onion after allium: white rot (Sclerotium cepivorum) risk - sclerotia survive decades; continuous allium is the highest-risk practice",
+      "explanation_ary_pending_review": "البصلة مور البصلة: خطر البياض الأبيض - الكليروتس كيعيشو عشرات السنين",
+      "source": "UC IPM / WSU Hortsense (8-10 year allium-free interval on infested soil); sclerotia longevity documented 20-40 years"
+    },
+    {
+      "rule_id": "R-WAT-01",
+      "group": "water_saving",
+      "delta": -8,
+      "blocking": false,
+      "applies_to": "all candidates; only evaluated when irrigation is known",
+      "expression": "very_high water class + flood/basin: -8; high + flood/basin: -4; drip/sprinkler/pivot/unknown: 0 (efficiency note, no invented saving)",
+      "explanation_en": "crop water need vs irrigation system application efficiency (FAO-56 ranges, labeled estimate)",
+      "explanation_ary_pending_review": "الحاجة المائية ديال المحصول مقارنة بنظام السقي (تقديرات FAO-56)",
+      "source": "FAO Irrigation & Drainage Paper 56; Tadla surface-irrigation efficiency context (ORMVAT / World Bank studies)"
+    },
+    {
+      "rule_id": "R-FRT-01",
+      "group": "yield_stability",
+      "delta": -10,
+      "blocking": false,
+      "applies_to": "all candidates; only evaluated when planned_season is provided",
+      "expression": "campaign start ~November; frost-sensitive crop outside its window: -10 + warning; window mismatch (low sensitivity): -4; in-window: 0",
+      "explanation_en": "planting window vs campaign start; Tadla winter minima near 0-5 degC (NASA POWER T2M_MIN, local dataset 1981-2026)",
+      "explanation_ary_pending_review": "نافذة الزراعة مقارنة ببداية الموسم؛ أدنى درجات الشتاء فتادلة قريبة من 0-5 درجات (بيانات POWER)",
+      "source": "NASA POWER daily point T2M_MIN (Tadla centroid, 1981-2026, local dataset); FAO EcoCrop windows (approximate, SME review pending)"
+    }
+  ]
+}

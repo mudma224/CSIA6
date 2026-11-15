@@ -1,0 +1,272 @@
+{
+  "table_version": "crops_agronomy 0.2.0",
+  "scope": "Tadla irrigated perimeter (Beni Amir / Beni Moussa), semi-arid Morocco",
+  "water_source": "FAO Irrigation & Drainage Paper 56 (Allen et al., 1998) - crop water needs are ESTIMATE ranges for comparable climates; not measured Tadla values",
+  "windows_source": "FAO EcoCrop / ORMVAT agronomic context - APPROXIMATE planting windows, pending agronomy SME review",
+  "candidates_note": "rotation_candidate=true marks the 11 annual candidates (13 P0 crops minus 3 perennial trees, plus the berseem rotation candidate). Every vocabulary crop carries a family so any legal history entry scores without KeyError; families follow standard botany (standard botanical family classification (Angiosperm Phylogeny Group IV)).",
+  "crops": {
+    "wheat": {
+      "family": "poaceae",
+      "water_class": "medium",
+      "water_need_mm_estimate": [
+        450,
+        650
+      ],
+      "planting_months": [
+        11,
+        12
+      ],
+      "legume": false,
+      "frost_sensitivity": "low",
+      "rotation_candidate": true
+    },
+    "maize": {
+      "family": "poaceae",
+      "water_class": "high",
+      "water_need_mm_estimate": [
+        500,
+        800
+      ],
+      "planting_months": [
+        4,
+        5
+      ],
+      "legume": false,
+      "frost_sensitivity": "moderate",
+      "rotation_candidate": true
+    },
+    "alfalfa": {
+      "family": "fabaceae",
+      "water_class": "very_high",
+      "water_need_mm_estimate": [
+        800,
+        1600
+      ],
+      "planting_months": [
+        10,
+        11,
+        3
+      ],
+      "legume": true,
+      "frost_sensitivity": "low",
+      "stand_years": [
+        2,
+        4
+      ],
+      "rotation_candidate": true
+    },
+    "berseem_clover": {
+      "family": "fabaceae",
+      "water_class": "high",
+      "water_need_mm_estimate": [
+        600,
+        900
+      ],
+      "planting_months": [
+        10,
+        11
+      ],
+      "legume": true,
+      "frost_sensitivity": "low",
+      "rotation_candidate": true
+    },
+    "fava_bean": {
+      "family": "fabaceae",
+      "water_class": "low",
+      "water_need_mm_estimate": [
+        300,
+        500
+      ],
+      "planting_months": [
+        10,
+        11
+      ],
+      "legume": true,
+      "frost_sensitivity": "low",
+      "rotation_candidate": true
+    },
+    "pea": {
+      "family": "fabaceae",
+      "water_class": "low",
+      "water_need_mm_estimate": [
+        300,
+        450
+      ],
+      "planting_months": [
+        11,
+        12,
+        2
+      ],
+      "legume": true,
+      "frost_sensitivity": "low",
+      "rotation_candidate": true
+    },
+    "sugar_beet": {
+      "family": "amaranthaceae",
+      "water_class": "high",
+      "water_need_mm_estimate": [
+        550,
+        750
+      ],
+      "planting_months": [
+        9,
+        10,
+        2,
+        3
+      ],
+      "legume": false,
+      "frost_sensitivity": "low",
+      "family_note": "beet family (ex-Chenopodiaceae) - beet cyst nematode host",
+      "rotation_candidate": true
+    },
+    "onion": {
+      "family": "amaryllidaceae",
+      "water_class": "medium",
+      "water_need_mm_estimate": [
+        350,
+        450
+      ],
+      "planting_months": [
+        10,
+        11,
+        2,
+        3
+      ],
+      "legume": false,
+      "frost_sensitivity": "low",
+      "rotation_candidate": true
+    },
+    "pepper": {
+      "family": "solanaceae",
+      "water_class": "medium",
+      "water_need_mm_estimate": [
+        400,
+        600
+      ],
+      "planting_months": [
+        3,
+        4
+      ],
+      "legume": false,
+      "frost_sensitivity": "high",
+      "rotation_candidate": true
+    },
+    "carrot": {
+      "family": "apiaceae",
+      "water_class": "medium",
+      "water_need_mm_estimate": [
+        400,
+        600
+      ],
+      "planting_months": [
+        10,
+        11,
+        12
+      ],
+      "legume": false,
+      "frost_sensitivity": "low",
+      "rotation_candidate": true
+    },
+    "anise": {
+      "family": "apiaceae",
+      "water_class": "low",
+      "water_need_mm_estimate": [
+        300,
+        500
+      ],
+      "planting_months": [
+        3,
+        4
+      ],
+      "legume": false,
+      "frost_sensitivity": "moderate",
+      "water_note": "aromatic crop - extension estimate, not in FAO-56 table",
+      "rotation_candidate": true
+    },
+    "turnip": {
+      "family": "brassicaceae",
+      "legume": false,
+      "rotation_candidate": false,
+      "family_source": "standard botanical family classification (Angiosperm Phylogeny Group IV)"
+    },
+    "parsley": {
+      "family": "apiaceae",
+      "legume": false,
+      "rotation_candidate": false,
+      "family_source": "standard botanical family classification (Angiosperm Phylogeny Group IV)"
+    },
+    "cabbage": {
+      "family": "brassicaceae",
+      "legume": false,
+      "rotation_candidate": false,
+      "family_source": "standard botanical family classification (Angiosperm Phylogeny Group IV)"
+    },
+    "fennel": {
+      "family": "apiaceae",
+      "legume": false,
+      "rotation_candidate": false,
+      "family_source": "standard botanical family classification (Angiosperm Phylogeny Group IV)"
+    },
+    "artichoke": {
+      "family": "asteraceae",
+      "legume": false,
+      "rotation_candidate": false,
+      "family_source": "standard botanical family classification (Angiosperm Phylogeny Group IV)"
+    },
+    "potato": {
+      "family": "solanaceae",
+      "legume": false,
+      "rotation_candidate": false,
+      "family_source": "standard botanical family classification (Angiosperm Phylogeny Group IV)"
+    },
+    "radish": {
+      "family": "brassicaceae",
+      "legume": false,
+      "rotation_candidate": false,
+      "family_source": "standard botanical family classification (Angiosperm Phylogeny Group IV)"
+    },
+    "oak": {
+      "family": "fagaceae",
+      "legume": false,
+      "rotation_candidate": false,
+      "family_source": "standard botanical family classification (Angiosperm Phylogeny Group IV)"
+    },
+    "apricot": {
+      "family": "rosaceae",
+      "legume": false,
+      "rotation_candidate": false,
+      "family_source": "standard botanical family classification (Angiosperm Phylogeny Group IV)"
+    },
+    "almond": {
+      "family": "rosaceae",
+      "legume": false,
+      "rotation_candidate": false,
+      "family_source": "standard botanical family classification (Angiosperm Phylogeny Group IV)"
+    },
+    "olive": {
+      "family": "oleaceae",
+      "legume": false,
+      "rotation_candidate": false,
+      "family_source": "standard botanical family classification (Angiosperm Phylogeny Group IV)"
+    },
+    "citrus": {
+      "family": "rutaceae",
+      "legume": false,
+      "rotation_candidate": false,
+      "family_source": "standard botanical family classification (Angiosperm Phylogeny Group IV)"
+    },
+    "pomegranate": {
+      "family": "lythraceae",
+      "legume": false,
+      "rotation_candidate": false,
+      "family_source": "standard botanical family classification (Angiosperm Phylogeny Group IV)"
+    },
+    "barley": {
+      "family": "poaceae",
+      "legume": false,
+      "rotation_candidate": false,
+      "family_source": "standard botanical family classification (Angiosperm Phylogeny Group IV)"
+    }
+  },
+  "botany_source": "standard botanical family classification (Angiosperm Phylogeny Group IV)"
+}
