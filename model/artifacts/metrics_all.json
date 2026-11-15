@@ -1,0 +1,391 @@
+{
+  "criteres": {
+    "version": 2,
+    "definition": "Critères de sauvegarde définis AVANT tout entraînement (exigence projet). Si un critère n'est pas atteint, AUCUN artefact modèle n'est sauvegardé pour cette échelle et le produit reste rule-based.",
+    "date_fige_v1": "2026-11-15",
+    "date_fige_v2": "2026-11-15",
+    "historique_v1_v2": "v1: 4 classes + binaire Wheat/Alfalfa (seuil macro-F1 0.75). v2, même jour, décision documentée dans projet/docs/decisions.md: AJOUTE (a) le modèle 3 classes — la classe mixte 'Trees + Seasonal' est retirée du périmètre ML et passe en gestion rule-based, (b) le réglage du seuil de décision du binaire sur les probabilités out-of-fold de la CV du train (jamais sur le test), (c) les baselines de règles (03_evaluate_rules.py) destinées à quantifier l'apport réel du ML. Les résultats v1 du 4 classes restent dans metrics_all.json comme historique.",
+    "random_state": 42,
+    "quatre_classes": {
+      "classes": [
+        "Seasonal Crop",
+        "Trees",
+        "Bare soil",
+        "Trees + Seasonal"
+      ],
+      "labels_source": "champ 'crop' du shapefile ground-truth (zone Tadla uniquement)",
+      "macro_f1_min": 0.75,
+      "jeu": "test = 25% des parcelles, GroupShuffleSplit par parcelle, seed 42",
+      "statut_v2": "conservé en historique — non sauvegardé en v1 (macro-F1 0.669), la classe mixte n'est pas séparable à ces échelles/features"
+    },
+    "trois_classes": {
+      "classes": [
+        "Seasonal Crop",
+        "Trees",
+        "Bare soil"
+      ],
+      "labels_source": "sous-ensemble du champ 'crop' du shapefile ground-truth (zone Tadla uniquement)",
+      "macro_f1_min": 0.75,
+      "jeu": "test = 25% des parcelles, GroupShuffleSplit par parcelle, seed 42",
+      "contexte": "la classe mixte 'Trees + Seasonal' (71 parcelles) est exclue du périmètre ML et observée rule-based (règles de l'observateur pixel/parcelle)"
+    },
+    "binaire_luzerne_cereale": {
+      "description": "Séparabilité Alfalfa vs Wheat au sein des parcelles 'Seasonal Crop' (labels d'espèces du ground-truth). Exigence: démontrer que le modèle distingue la rotation fourragère de la céréale.",
+      "macro_f1_min": 0.75,
+      "jeu": "test = 25% des parcelles, GroupShuffleSplit par parcelle, seed 42",
+      "seuil_decision": "réglé UNIQUEMENT sur les probabilités out-of-fold de la CV du train (grille 0.05..0.95, macro-F1 maximal); le test ne sert qu'au rapport final"
+    },
+    "baselines_regles": {
+      "description": "Règles simples évaluées sur le MÊME split test (seed 42) pour quantifier l'apport du ML: seuils choisis sur le train uniquement.",
+      "binaire": [
+        "R1: Alfalfa si ndvi_summer >= t",
+        "R2: Alfalfa si ndvi_summer >= t1 OU ndvi_autumn >= t2"
+      ],
+      "observateur_pixel": "arbres/sol nu/saisonnier/mixte par seuils NDVI (amplitude, minimum annuel, moyenne) choisis sur le train",
+      "sortie": "model/artifacts/rule_baselines.json"
+    },
+    "note_honnetete": "Un modèle qui échoue aux critères n'est pas un échec du projet: la couche d'observation reste alors documentée comme non déployable à l'échelle pixel, et le scoring rule-based (artefact principal) n'en dépend pas."
+  },
+  "runs": {
+    "s2_parcel": {
+      "scale": "s2_parcel",
+      "saved": false,
+      "criterion_macro_f1_min": 0.75,
+      "test_macro_f1": 0.6686,
+      "test_accuracy": 0.8658,
+      "cv_macro_f1_folds": [
+        0.6344,
+        0.6582,
+        0.6108,
+        0.7,
+        0.6722
+      ],
+      "cv_macro_f1_mean": 0.6551,
+      "tuned_params": {
+        "max_depth": null,
+        "min_samples_leaf": 1
+      },
+      "decision_threshold": 0.5,
+      "n_train": 1095,
+      "n_test": 365,
+      "class_report_test": {
+        "Bare soil": {
+          "precision": 0.6923076923076923,
+          "recall": 0.6923076923076923,
+          "f1-score": 0.6923076923076923,
+          "support": 26.0
+        },
+        "Seasonal Crop": {
+          "precision": 0.9365671641791045,
+          "recall": 0.9028776978417267,
+          "f1-score": 0.9194139194139194,
+          "support": 278.0
+        },
+        "Trees": {
+          "precision": 0.7857142857142857,
+          "recall": 0.9565217391304348,
+          "f1-score": 0.8627450980392157,
+          "support": 46.0
+        },
+        "Trees + Seasonal": {
+          "precision": 0.2,
+          "recall": 0.2,
+          "f1-score": 0.2,
+          "support": 15.0
+        },
+        "accuracy": 0.8657534246575342,
+        "macro avg": {
+          "precision": 0.6536472855502706,
+          "recall": 0.6879267823199635,
+          "f1-score": 0.6686166774402069,
+          "support": 365.0
+        },
+        "weighted avg": {
+          "precision": 0.8698863802319129,
+          "recall": 0.8657534246575342,
+          "f1-score": 0.8665297098818451,
+          "support": 365.0
+        }
+      },
+      "confusion_labels": [
+        "Bare soil",
+        "Seasonal Crop",
+        "Trees",
+        "Trees + Seasonal"
+      ],
+      "versions": {
+        "python": "3.14.6",
+        "sklearn": "1.9.0",
+        "numpy": "2.5.2",
+        "pandas": "3.0.5",
+        "platform": "Windows-11-10.0.26300-SP0"
+      },
+      "seed": 42
+    },
+    "modis_pixel": {
+      "scale": "modis_pixel",
+      "saved": false,
+      "criterion_macro_f1_min": 0.75,
+      "test_macro_f1": 0.4684,
+      "test_accuracy": 0.7596,
+      "cv_macro_f1_folds": [
+        0.401,
+        0.3918,
+        0.3524,
+        0.4543,
+        0.3949
+      ],
+      "cv_macro_f1_mean": 0.3989,
+      "tuned_params": {
+        "max_depth": null,
+        "min_samples_leaf": 1
+      },
+      "decision_threshold": 0.5,
+      "n_train": 547,
+      "n_test": 183,
+      "class_report_test": {
+        "Bare soil": {
+          "precision": 0.42857142857142855,
+          "recall": 0.5454545454545454,
+          "f1-score": 0.48,
+          "support": 11.0
+        },
+        "Seasonal Crop": {
+          "precision": 0.9,
+          "recall": 0.823943661971831,
+          "f1-score": 0.8602941176470589,
+          "support": 142.0
+        },
+        "Trees": {
+          "precision": 0.43243243243243246,
+          "recall": 0.6956521739130435,
+          "f1-score": 0.5333333333333333,
+          "support": 23.0
+        },
+        "Trees + Seasonal": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1-score": 0.0,
+          "support": 7.0
+        },
+        "accuracy": 0.7595628415300546,
+        "macro avg": {
+          "precision": 0.44025096525096524,
+          "recall": 0.516262595334855,
+          "f1-score": 0.468406862745098,
+          "support": 183.0
+        },
+        "weighted avg": {
+          "precision": 0.7784712112580964,
+          "recall": 0.7595628415300546,
+          "f1-score": 0.763434051216115,
+          "support": 183.0
+        }
+      },
+      "confusion_labels": [
+        "Bare soil",
+        "Seasonal Crop",
+        "Trees",
+        "Trees + Seasonal"
+      ],
+      "versions": {
+        "python": "3.14.6",
+        "sklearn": "1.9.0",
+        "numpy": "2.5.2",
+        "pandas": "3.0.5",
+        "platform": "Windows-11-10.0.26300-SP0"
+      },
+      "seed": 42
+    },
+    "binary_wheat_alfalfa": {
+      "scale": "binary_wheat_alfalfa",
+      "saved": true,
+      "criterion_macro_f1_min": 0.75,
+      "test_macro_f1": 0.8642,
+      "test_accuracy": 0.9276,
+      "cv_macro_f1_folds": [
+        0.8646,
+        0.9134,
+        0.8721,
+        0.9116,
+        0.8586
+      ],
+      "cv_macro_f1_mean": 0.8841,
+      "tuned_params": {
+        "max_depth": null,
+        "min_samples_leaf": 1
+      },
+      "decision_threshold": 0.45,
+      "n_train": 660,
+      "n_test": 221,
+      "class_report_test": {
+        "0": {
+          "precision": 0.9834254143646409,
+          "recall": 0.9319371727748691,
+          "f1-score": 0.956989247311828,
+          "support": 191.0
+        },
+        "1": {
+          "precision": 0.675,
+          "recall": 0.9,
+          "f1-score": 0.7714285714285715,
+          "support": 30.0
+        },
+        "accuracy": 0.9276018099547512,
+        "macro avg": {
+          "precision": 0.8292127071823205,
+          "recall": 0.9159685863874345,
+          "f1-score": 0.8642089093701997,
+          "support": 221.0
+        },
+        "weighted avg": {
+          "precision": 0.9415577110572235,
+          "recall": 0.9276018099547512,
+          "f1-score": 0.9318000152914764,
+          "support": 221.0
+        }
+      },
+      "confusion_labels": [
+        "0",
+        "1"
+      ],
+      "versions": {
+        "python": "3.14.6",
+        "sklearn": "1.9.0",
+        "numpy": "2.5.2",
+        "pandas": "3.0.5",
+        "platform": "Windows-11-10.0.26300-SP0"
+      },
+      "seed": 42
+    },
+    "modis_binary_wheat_alfalfa": {
+      "scale": "modis_binary_wheat_alfalfa",
+      "saved": false,
+      "criterion_macro_f1_min": 0.75,
+      "test_macro_f1": 0.6241,
+      "test_accuracy": 0.8491,
+      "cv_macro_f1_folds": [
+        0.7136,
+        0.5705,
+        0.5463,
+        0.5982,
+        0.5655
+      ],
+      "cv_macro_f1_mean": 0.5988,
+      "tuned_params": {
+        "max_depth": null,
+        "min_samples_leaf": 1
+      },
+      "decision_threshold": 0.5,
+      "n_train": 315,
+      "n_test": 106,
+      "class_report_test": {
+        "0": {
+          "precision": 0.9052631578947369,
+          "recall": 0.9247311827956989,
+          "f1-score": 0.9148936170212766,
+          "support": 93.0
+        },
+        "1": {
+          "precision": 0.36363636363636365,
+          "recall": 0.3076923076923077,
+          "f1-score": 0.3333333333333333,
+          "support": 13.0
+        },
+        "accuracy": 0.8490566037735849,
+        "macro avg": {
+          "precision": 0.6344497607655503,
+          "recall": 0.6162117452440032,
+          "f1-score": 0.624113475177305,
+          "support": 106.0
+        },
+        "weighted avg": {
+          "precision": 0.8388372302970118,
+          "recall": 0.8490566037735849,
+          "f1-score": 0.8435701860029439,
+          "support": 106.0
+        }
+      },
+      "confusion_labels": [
+        "0",
+        "1"
+      ],
+      "versions": {
+        "python": "3.14.6",
+        "sklearn": "1.9.0",
+        "numpy": "2.5.2",
+        "pandas": "3.0.5",
+        "platform": "Windows-11-10.0.26300-SP0"
+      },
+      "seed": 42
+    },
+    "s2_parcel_3class": {
+      "scale": "s2_parcel_3class",
+      "saved": true,
+      "criterion_macro_f1_min": 0.75,
+      "test_macro_f1": 0.8431,
+      "test_accuracy": 0.9257,
+      "cv_macro_f1_folds": [
+        0.8417,
+        0.8826,
+        0.8988,
+        0.8638,
+        0.827
+      ],
+      "cv_macro_f1_mean": 0.8628,
+      "tuned_params": {
+        "max_depth": null,
+        "min_samples_leaf": 1
+      },
+      "decision_threshold": 0.5,
+      "n_train": 1050,
+      "n_test": 350,
+      "class_report_test": {
+        "Bare soil": {
+          "precision": 0.6296296296296297,
+          "recall": 0.7391304347826086,
+          "f1-score": 0.68,
+          "support": 23.0
+        },
+        "Seasonal Crop": {
+          "precision": 0.9737827715355806,
+          "recall": 0.935251798561151,
+          "f1-score": 0.9541284403669725,
+          "support": 278.0
+        },
+        "Trees": {
+          "precision": 0.8392857142857143,
+          "recall": 0.9591836734693877,
+          "f1-score": 0.8952380952380953,
+          "support": 49.0
+        },
+        "accuracy": 0.9257142857142857,
+        "macro avg": {
+          "precision": 0.8142327051503081,
+          "recall": 0.877855302271049,
+          "f1-score": 0.8431221785350226,
+          "support": 350.0
+        },
+        "weighted avg": {
+          "precision": 0.9323374056239225,
+          "recall": 0.9257142857142857,
+          "f1-score": 0.927869637396243,
+          "support": 350.0
+        }
+      },
+      "confusion_labels": [
+        "Bare soil",
+        "Seasonal Crop",
+        "Trees"
+      ],
+      "versions": {
+        "python": "3.14.6",
+        "sklearn": "1.9.0",
+        "numpy": "2.5.2",
+        "pandas": "3.0.5",
+        "platform": "Windows-11-10.0.26300-SP0"
+      },
+      "seed": 42
+    }
+  }
+}

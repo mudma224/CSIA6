@@ -1,0 +1,47 @@
+{
+  "version": 2,
+  "definition": "Critères de sauvegarde définis AVANT tout entraînement (exigence projet). Si un critère n'est pas atteint, AUCUN artefact modèle n'est sauvegardé pour cette échelle et le produit reste rule-based.",
+  "date_fige_v1": "2026-11-15",
+  "date_fige_v2": "2026-11-15",
+  "historique_v1_v2": "v1: 4 classes + binaire Wheat/Alfalfa (seuil macro-F1 0.75). v2, même jour, décision documentée dans projet/docs/decisions.md: AJOUTE (a) le modèle 3 classes — la classe mixte 'Trees + Seasonal' est retirée du périmètre ML et passe en gestion rule-based, (b) le réglage du seuil de décision du binaire sur les probabilités out-of-fold de la CV du train (jamais sur le test), (c) les baselines de règles (03_evaluate_rules.py) destinées à quantifier l'apport réel du ML. Les résultats v1 du 4 classes restent dans metrics_all.json comme historique.",
+  "random_state": 42,
+  "quatre_classes": {
+    "classes": [
+      "Seasonal Crop",
+      "Trees",
+      "Bare soil",
+      "Trees + Seasonal"
+    ],
+    "labels_source": "champ 'crop' du shapefile ground-truth (zone Tadla uniquement)",
+    "macro_f1_min": 0.75,
+    "jeu": "test = 25% des parcelles, GroupShuffleSplit par parcelle, seed 42",
+    "statut_v2": "conservé en historique — non sauvegardé en v1 (macro-F1 0.669), la classe mixte n'est pas séparable à ces échelles/features"
+  },
+  "trois_classes": {
+    "classes": [
+      "Seasonal Crop",
+      "Trees",
+      "Bare soil"
+    ],
+    "labels_source": "sous-ensemble du champ 'crop' du shapefile ground-truth (zone Tadla uniquement)",
+    "macro_f1_min": 0.75,
+    "jeu": "test = 25% des parcelles, GroupShuffleSplit par parcelle, seed 42",
+    "contexte": "la classe mixte 'Trees + Seasonal' (71 parcelles) est exclue du périmètre ML et observée rule-based (règles de l'observateur pixel/parcelle)"
+  },
+  "binaire_luzerne_cereale": {
+    "description": "Séparabilité Alfalfa vs Wheat au sein des parcelles 'Seasonal Crop' (labels d'espèces du ground-truth). Exigence: démontrer que le modèle distingue la rotation fourragère de la céréale.",
+    "macro_f1_min": 0.75,
+    "jeu": "test = 25% des parcelles, GroupShuffleSplit par parcelle, seed 42",
+    "seuil_decision": "réglé UNIQUEMENT sur les probabilités out-of-fold de la CV du train (grille 0.05..0.95, macro-F1 maximal); le test ne sert qu'au rapport final"
+  },
+  "baselines_regles": {
+    "description": "Règles simples évaluées sur le MÊME split test (seed 42) pour quantifier l'apport du ML: seuils choisis sur le train uniquement.",
+    "binaire": [
+      "R1: Alfalfa si ndvi_summer >= t",
+      "R2: Alfalfa si ndvi_summer >= t1 OU ndvi_autumn >= t2"
+    ],
+    "observateur_pixel": "arbres/sol nu/saisonnier/mixte par seuils NDVI (amplitude, minimum annuel, moyenne) choisis sur le train",
+    "sortie": "model/artifacts/rule_baselines.json"
+  },
+  "note_honnetete": "Un modèle qui échoue aux critères n'est pas un échec du projet: la couche d'observation reste alors documentée comme non déployable à l'échelle pixel, et le scoring rule-based (artefact principal) n'en dépend pas."
+}

@@ -1,0 +1,6 @@
+{
+  "fixture_type": "synthetic_contract_test",
+  "fixture_note": "Synthetic 503 body for BFF failure-path tests only; the real service returns this shape at /ready when artifact hashes fail.",
+  "status": "model_unavailable",
+  "reason": "artifact_hash_mismatch"
+}

@@ -1,0 +1,5 @@
+,pred_Bare soil,pred_Seasonal Crop,pred_Trees,pred_Trees + Seasonal
+true_Bare soil,6,4,1,0
+true_Seasonal Crop,6,117,17,2
+true_Trees,2,5,16,0
+true_Trees + Seasonal,0,4,3,0

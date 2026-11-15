@@ -11,18 +11,18 @@ beforeEach(() => {
 });
 
 describe("M2 Home / Rotation links", () => {
-  it("Home offers a real parcel-form link, while next-crop still opens unavailable rotation", () => {
+  it("Home offers a real parcel-form link and the rotation status destination", () => {
     render(<LocaleProvider><HomeScreen /></LocaleProvider>);
     expect(screen.getByRole("link", { name: /My parcel/ })).toHaveAttribute("href", "/parcels/new");
     expect(screen.getByRole("link", { name: "See recommendation status" })).toHaveAttribute("href", "/rotation");
-    expect(screen.getByText(/No server save or recommendation/i)).toBeInTheDocument();
+    expect(screen.getByText(/validated rule engine/i)).toBeInTheDocument();
   });
 
-  it("Rotation links to the parcel form without displaying scores or options", () => {
+  it("Rotation intro links to the parcel form and stays score-free until a request", () => {
     render(<LocaleProvider><RotationScreen /></LocaleProvider>);
     expect(screen.getByRole("link", { name: "Describe a parcel" })).toHaveAttribute("href", "/parcels/new");
-    expect(screen.getByText(/Recommendations are not available yet/)).toBeInTheDocument();
-    expect(screen.queryByText(/suitability score/i)).not.toBeInTheDocument();
+    expect(screen.getByText(/scored with the same rules as the alternatives/)).toBeInTheDocument();
+    expect(screen.queryByText(/Ranking score/)).not.toBeInTheDocument();
     expect(screen.queryByRole("table")).not.toBeInTheDocument();
   });
 });

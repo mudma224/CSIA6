@@ -170,7 +170,7 @@ Each requirement has an ID for later implementation tasks and acceptance tests.
 | Irrigation zone | Béni Amir / Béni Moussa / Other or unsure | Not a replacement for coordinates |
 | Parcel location | Map pin or coordinates when permitted | If missing, show reduced geographic precision |
 | Approximate field area | Numeric, in hectares | Positive-number validation |
-| Most recent crop | Choice from **validated** study crop list | Exact crop list to be supplied later |
+| Most recent crop | Choice from **validated** study crop list | Supplied: `src/data/crops.v1.json` — P0 form list = entries with `form_p0: true`; an explicit unspecified state is required (FR-C03) |
 | Planned season | Season selection | Must be tied to the relevant year in the final contract |
 | Irrigation method | Drip / surface / unknown, subject to validation | Do not assume irrigation allocation |
 | Additional previous crop | Optional | Helps distinguish rotation history from a one-season record |

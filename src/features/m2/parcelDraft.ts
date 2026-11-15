@@ -45,8 +45,9 @@ export type ParcelErrorField =
 export type ParcelErrorCode =
   | "requiredZone" | "invalidArea" | "requiredIrrigation"
   | "invalidLatitude" | "invalidLongitude" | "requiredCoordinates"
-  | "requiredSeasonMode" | "requiredSeasonText"
-  | "cropRequiredForSeason" | "tooLongName" | "tooLongCrop" | "tooLongSeason";
+  | "requiredSeasonMode" | "requiredSeasonText" | "invalidSeasonFormat"
+  | "cropRequiredForSeason" | "unrecognizedCrop"
+  | "tooLongName" | "tooLongCrop" | "tooLongSeason";
 
 export type ParcelErrors = Partial<Record<ParcelErrorField, ParcelErrorCode>>;
 
@@ -62,6 +63,14 @@ function decimalInput(value: string): number | null {
 function isCoordinateValid(value: string, min: number, max: number): boolean {
   const number = decimalInput(value);
   return number !== null && number >= min && number <= max;
+}
+
+// Campaign grammar shared with the recommendation contract (v0.2): consecutive
+// campaign years like 2024-2025. The form guides the farmer to it instead of
+// accepting unverifiable free wording that the engine could not interpret.
+export function seasonFormatOk(value: string): boolean {
+  if (!/^\d{4}-\d{4}$/.test(value)) return false;
+  return Number(value.slice(0, 4)) + 1 === Number(value.slice(5));
 }
 
 /** Usability validation only; server/model requirements are not determined here. */
@@ -105,6 +114,20 @@ export function validateParcelStep(draft: ParcelDraft, step: 0 | 1 | 2): ParcelE
       if (!draft[cropKey].trim() && draft[seasonKey].trim()) {
         errors[cropKey] = "cropRequiredForSeason";
       }
+    }
+    // Campaign grammar when a season is provided (C06: unknown stays allowed).
+    // Never overwrites a length error already reported on the same field.
+    if (!errors.plannedSeason && draft.plannedSeason.trim()
+      && !seasonFormatOk(draft.plannedSeason.trim())) {
+      errors.plannedSeason = "invalidSeasonFormat";
+    }
+    if (!errors.recentCropSeason && !errors.recentCrop && draft.recentCropSeason.trim()
+      && !seasonFormatOk(draft.recentCropSeason.trim())) {
+      errors.recentCropSeason = "invalidSeasonFormat";
+    }
+    if (!errors.earlierCropSeason && !errors.earlierCrop && draft.earlierCropSeason.trim()
+      && !seasonFormatOk(draft.earlierCropSeason.trim())) {
+      errors.earlierCropSeason = "invalidSeasonFormat";
     }
   }
 

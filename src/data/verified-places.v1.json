@@ -1,0 +1,133 @@
+{
+  "type": "FeatureCollection",
+  "name": "flaht bladi — verified Tadla map places v1.1",
+  "metadata": {
+    "schema_version": "1.1",
+    "generated": "2026-11-15",
+    "purpose": "Verified map points consumed by the M3 map screen through the src/data/m3/verifiedPoints.ts adapter. Verified geometry only; no zone polygons (FR-E02/E08) and no provisional points (documentation strategy: no placeholders that look real).",
+    "known_gaps": [
+      "Irrigation-sector polygons excluded: no official ORMVAT GIS boundary obtained yet (request pending via Local Lead).",
+      "Beni Moussa / Beni Amir zone label points excluded from this verified layer: their centers are team-derived approximations, not sourced geometry.",
+      "Wholesale markets and seed suppliers: no verified coordinates collected yet — the map shows honest empty categories.",
+      "Dam capacities reported by sources differ (Bin El Ouidane: ~1,215.5 to 1,500 million m3; Ahmed El Hansali: 668.2 to 740 million m3) — values intentionally omitted from this layer until ABHOER/ORMVAT confirms."
+    ],
+    "provenance_rule": "Every feature carries its source, verification date and precision caveat. Do not edit values without team review; update docs/decisions.md in the same PR if a source is upgraded."
+  },
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "dam-bin-el-ouidane",
+        "name_en": "Bin El Ouidane Dam",
+        "name_ar": "سد بين الويدان",
+        "category": "water",
+        "status": "operational",
+        "detail_en": "Rock-fill dam on Oued El Abid, commissioned 1953; serves the Beni Moussa irrigation perimeter (and the Tassaout perimeter).",
+        "detail_ar": "سد على واد العبيد، أنجز سنة 1953؛ يغذي محيط بني موسى السقوي.",
+        "serves": ["beni_moussa"],
+        "built": 1953,
+        "coordinate_source_url": "https://mapcarta.com/W504108035",
+        "osm_feature_url": "https://www.openstreetmap.org/way/504108035",
+        "context_source_url": "https://www.tandfonline.com/doi/10.1080/10106049.2025.2471104",
+        "source": [
+          "Coordinates: OpenStreetMap mapped feature (way 504108035, via Mapcarta) — team-verified 2026-11-15",
+          "Role and commissioning year: ORMVAT Monographie, https://ormvatadla.ma/monographie/ (institutional)"
+        ],
+        "verified_date": "2026-11-15",
+        "precision_caveat": "Coordinates follow the mapped OSM feature (approximate); confirm with ABHOER/ORMVAT before public production use."
+      },
+      "geometry": {"type": "Point", "coordinates": [-6.46409, 32.10682]}
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "dam-ahmed-el-hansali",
+        "name_en": "Ahmed El Hansali Dam",
+        "name_ar": "سد أحمد الحنصالي",
+        "category": "water",
+        "status": "operational",
+        "detail_en": "Concrete-faced rock-fill dam on the Oum Er-Rbia (height 101 m), commissioned 2001; serves the Beni Amir irrigation perimeter.",
+        "detail_ar": "سد على أودية أم الربيع، أنجز سنة 2001؛ يغذي محيط بني عامر السقوي.",
+        "serves": ["beni_amir"],
+        "built": 2001,
+        "coordinate_source_url": "https://mapcarta.com/W385347001",
+        "osm_feature_url": "https://www.openstreetmap.org/way/385347001",
+        "context_source_url": "https://www.tandfonline.com/doi/10.1080/10106049.2025.2471104",
+        "source": [
+          "Coordinates: OpenStreetMap mapped feature (way 385347001, via Mapcarta) — team-verified 2026-11-15",
+          "Site description corroborated by Global Energy Monitor (Ait Oum El Bekht, cercle de El Ksiba) and press describing the dam near Zaouiat Cheikh on the Khénifra road",
+          "Role and commissioning year: ORMVAT Monographie, https://ormvatadla.ma/monographie/ (institutional)"
+        ],
+        "verified_date": "2026-11-15",
+        "precision_caveat": "Coordinates follow the mapped OSM feature (approximate), corroborated by two independent site descriptions; confirm with ABHOER before public production use."
+      },
+      "geometry": {"type": "Point", "coordinates": [-5.88843, 32.6932]}
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "city-beni-mellal",
+        "name_en": "Béni Mellal",
+        "name_ar": "بني ملال",
+        "category": "reference",
+        "status": "operational",
+        "detail_en": "Capital of the Béni Mellal-Khénifra region.",
+        "detail_ar": "عاصمة جهة بني ملال الخنيفرة.",
+        "coordinate_source_url": "https://www.hcp.ma/region-drta/docs/Publications/Annuaire%20Statistique%20Regional%202021.pdf",
+        "osm_feature_url": null,
+        "context_source_url": null,
+        "source": [
+          "Coordinates: HCP Annuaire statistique régional (official, published as 32°22' N / 6°24' W)",
+          "https://www.hcp.ma/region-drta/docs/Publications/Annuaire%20Statistique%20Regional%202021.pdf"
+        ],
+        "verified_date": "2026-11-15",
+        "precision_caveat": "Official publication gives degrees-minutes precision (~1.8 km)."
+      },
+      "geometry": {"type": "Point", "coordinates": [-6.4, 32.3667]}
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "city-kasba-tadla",
+        "name_en": "Kasba Tadla",
+        "name_ar": "قصبة تادلة",
+        "category": "reference",
+        "status": "operational",
+        "detail_en": "Historic town of the Tadla plain; hosts the SUTA sugar refinery (Cosumar group).",
+        "detail_ar": "مدينة تاريخية في سهل تادلة؛ تحتضن مصنع السكر SUTA.",
+        "coordinate_source_url": null,
+        "osm_feature_url": null,
+        "context_source_url": "https://ormvatadla.ma/monographie/",
+        "source": [
+          "Coordinates: geographical coordinate databases, 32.595828 / -6.269461 (secondary source, two consistent records)",
+          "SUTA refinery: ORMVAT Monographie industrial table (institutional)"
+        ],
+        "verified_date": "2026-11-15",
+        "precision_caveat": "Coordinates from secondary sources."
+      },
+      "geometry": {"type": "Point", "coordinates": [-6.268, 32.598]}
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "city-fquih-ben-salah",
+        "name_en": "Fquih Ben Salah",
+        "name_ar": "الفقيه بن صالح",
+        "category": "reference",
+        "status": "operational",
+        "detail_en": "Seat of the ORMVAT (Regional Agricultural Development Office of Tadla).",
+        "detail_ar": "مقر المكتب الجهوي للتنمية الفلاحية لتادلة (ORMVAT).",
+        "coordinate_source_url": null,
+        "osm_feature_url": null,
+        "context_source_url": "https://core.ac.uk/download/52632235.pdf",
+        "source": [
+          "Coordinates: geographical coordinate databases, 32.50444 / -6.68639 (secondary source, two consistent records)",
+          "ORMVAT seat: author affiliation in Hammani et al. (IAV/Cirad/ORMVAT), https://core.ac.uk/download/52632235.pdf"
+        ],
+        "verified_date": "2026-11-15",
+        "precision_caveat": "Coordinates from secondary sources; ORMVAT HQ address to confirm with the office."
+      },
+      "geometry": {"type": "Point", "coordinates": [-6.6905, 32.5009]}
+    }
+  ]
+}

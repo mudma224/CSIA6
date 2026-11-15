@@ -28,7 +28,7 @@ const LeafletMap = dynamic(
   { ssr: false, loading: MapLoading },
 );
 
-const filters: MapFilter[] = ["all", "water", "market", "supplier"];
+const filters: MapFilter[] = ["all", "water", "reference", "market", "supplier"];
 
 export function MapScreen() {
   const { locale } = useLocale();
@@ -42,7 +42,7 @@ export function MapScreen() {
   const selected = verifiedMapPoints.find((item) => item.id === selectedId) ?? null;
 
   const filterLabels: Record<MapFilter, string> = {
-    all: tx("all"), water: tx("water"),
+    all: tx("all"), water: tx("water"), reference: tx("references"),
     market: tx("markets"), supplier: tx("suppliers"),
   };
 
@@ -169,15 +169,24 @@ export function MapScreen() {
               <div className="space-y-3">
                 <h3 className="text-lg font-bold text-forest">{selected.title[locale]}</h3>
                 <p className="text-ink">{selected.description[locale]}</p>
-                <p className="text-sm font-semibold text-leaf">{tx("categoryWater")}</p>
+                <p className="text-sm font-semibold text-leaf">
+                  {selected.category === "water" ? tx("categoryWater") : tx("categoryReference")}
+                </p>
+                <p className="text-sm text-muted">{selected.precisionCaveat}</p>
                 <p className="text-sm text-muted">{tx("approximateLocation")}</p>
                 <p className="text-sm text-muted">
                   {tx("reviewedOn")}: <time dateTime={selected.reviewedOn}>{selected.reviewedOn}</time>
                 </p>
                 <div className="flex flex-col items-start gap-1">
-                  <a className="inline-flex min-h-11 items-center font-semibold text-forest underline" href={selected.coordinateSourceUrl} target="_blank" rel="noopener noreferrer">{tx("mapSource")}</a>
-                  <a className="inline-flex min-h-11 items-center font-semibold text-forest underline" href={selected.osmFeatureUrl} target="_blank" rel="noopener noreferrer">{tx("osmFeature")}</a>
-                  <a className="inline-flex min-h-11 items-center font-semibold text-forest underline" href={selected.contextSourceUrl} target="_blank" rel="noopener noreferrer">{tx("contextSource")}</a>
+                  {selected.coordinateSourceUrl && (
+                    <a className="inline-flex min-h-11 items-center font-semibold text-forest underline" href={selected.coordinateSourceUrl} target="_blank" rel="noopener noreferrer">{tx("mapSource")}</a>
+                  )}
+                  {selected.osmFeatureUrl && (
+                    <a className="inline-flex min-h-11 items-center font-semibold text-forest underline" href={selected.osmFeatureUrl} target="_blank" rel="noopener noreferrer">{tx("osmFeature")}</a>
+                  )}
+                  {selected.contextSourceUrl && (
+                    <a className="inline-flex min-h-11 items-center font-semibold text-forest underline" href={selected.contextSourceUrl} target="_blank" rel="noopener noreferrer">{tx("contextSource")}</a>
+                  )}
                   <a className="inline-flex min-h-11 items-center font-semibold text-forest underline" href={externalDirectionsUrl(selected)} target="_blank" rel="noopener noreferrer">{tx("directions")}</a>
                 </div>
                 <p className="text-sm text-muted">{tx("directionsNotice")}</p>

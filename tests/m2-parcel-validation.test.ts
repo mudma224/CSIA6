@@ -64,13 +64,19 @@ describe("M2 UI-only parcel validation", () => {
     }), 1)).toEqual({});
   });
 
-  it("allows unknown season and requires typed label only if known", () => {
+  it("allows unknown season and enforces the campaign grammar when known", () => {
     expect(validateParcelStep(draft({ seasonChoice: "" }), 2).seasonChoice).toBe("requiredSeasonMode");
     expect(validateParcelStep(draft({ seasonChoice: "known", plannedSeason: "" }), 2).plannedSeason)
       .toBe("requiredSeasonText");
     expect(validateParcelStep(draft({ seasonChoice: "unsure" }), 2)).toEqual({});
-    expect(validateParcelStep(draft({ seasonChoice: "known", plannedSeason: "My next season" }), 2))
+    expect(validateParcelStep(draft({ seasonChoice: "known", plannedSeason: "2025-2026" }), 2))
       .toEqual({});
+    expect(validateParcelStep(draft({ seasonChoice: "known", plannedSeason: "My next season" }), 2)
+      .plannedSeason).toBe("invalidSeasonFormat");
+    expect(validateParcelStep(draft({ seasonChoice: "known", plannedSeason: "2024-2026" }), 2)
+      .plannedSeason).toBe("invalidSeasonFormat");
+    expect(validateParcelStep(draft({ recentCrop: "wheat", recentCropSeason: "2024/2025" }), 2)
+      .recentCropSeason).toBe("invalidSeasonFormat");
   });
 
   it("does not require a crop name or pretend to validate a crop catalog", () => {

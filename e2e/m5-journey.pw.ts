@@ -29,11 +29,11 @@ test("welcome → optional phone/demo entry → Home → Rotation", async ({ pag
   await expect(page.getByText(/Frontend demonstration · no real account/)).toBeVisible();
   await page.getByRole("link", { name: "See recommendation status" }).click();
   await expect(page).toHaveURL(/\/rotation$/);
-  await expect(page.getByText(/Crop recommendations are unavailable/i).first()).toBeVisible();
+  await expect(page.getByText(/scored with the same rules as the alternatives/i).first()).toBeVisible();
   await expect(page.getByRole("link", { name: "Describe a parcel" })).toBeVisible();
 });
 
-test("four-step parcel UI validates, preserves draft across languages, and confirms locally", async ({ page }) => {
+test("four-step parcel UI validates, preserves draft across languages, and scores rotation options", async ({ page }) => {
   const appApiWrites = monitorAppApiWrites(page);
   await openEnglish(page, "/parcels/new");
   await expect(page.getByRole("heading", { name: "Tell us about your parcel" })).toBeVisible();
@@ -49,16 +49,19 @@ test("four-step parcel UI validates, preserves draft across languages, and confi
   await page.getByRole("button", { name: "Next step" }).click();
   await page.getByRole("radio", { name: "Drip irrigation" }).check();
   await page.getByRole("button", { name: "Next step" }).click();
+  await page.getByRole("group", { name: /Most recent crop/ }).getByRole("radio", { name: "Wheat" }).check();
   await page.getByRole("radio", { name: "I don't know yet" }).check();
   await page.getByRole("button", { name: "Next step" }).click();
   await expect(page.getByText("My temporary field")).toBeVisible();
-  await expect(page.getByText(/Crop recommendations are unavailable/)).toBeVisible();
-  await page.getByRole("button", { name: "Confirm local review" }).click();
-  await expect(page.getByRole("heading", { name: "Local review confirmed" })).toBeVisible();
-  await expect(page.getByText(/No parcel was saved/)).toBeVisible();
-  expect(appApiWrites).toEqual([]);
-  await page.reload({ waitUntil: "domcontentloaded" });
-  await expect(page.getByRole("textbox", { name: "Parcel name (optional)" })).toHaveValue("");
+  await page.getByRole("button", { name: "See my rotation options" }).click();
+  await expect(page).toHaveURL(/\/rotation$/);
+  await expect(page.getByText(/Your current strategy/).first()).toBeVisible();
+  await expect(page.getByText(/Ranked alternatives/).first()).toBeVisible();
+  // G0-approved demo policy: exactly one POST to the BFF, nothing else, nothing persisted.
+  expect(appApiWrites).toEqual(["POST /api/v1/recommendations"]);
+  await page.goto("/parcels/new", { waitUntil: "domcontentloaded" });
+  await expect(page.getByRole("textbox", { name: /Parcel name \(optional\)|اسم الأرض \(اختياري\)/ }))
+    .toHaveValue("");
 });
 
 test("Tadla map keeps a sourced list and honest empty category without network tiles", async ({ page }) => {

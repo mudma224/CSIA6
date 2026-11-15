@@ -1,0 +1,11 @@
+{
+  "fixture_type": "demo_only",
+  "fixture_note": "DEMO FIXTURE - never a real agronomic result. Only surfaced when the demo policy decision is approved and the UI labels it prominently.",
+  "status": "demo_preview",
+  "demo": true,
+  "demo_notice": "DEMO - illustrative UI walkthrough, not an agronomic result",
+  "payload": {
+    "baseline": null,
+    "alternatives": []
+  }
+}

@@ -33,13 +33,18 @@ describe("M5 frontend-only boundaries", () => {
     expect(validateParcelStep({ ...parcel, areaHa: "-4" }, 0).areaHa).toBe("invalidArea");
   });
 
-  it("M3 markers each keep source URLs and approximate feature meaning", () => {
-    expect(verifiedMapPoints).toHaveLength(2);
-    for (const point of verifiedMapPoints) {
-      expect(point.category).toBe("water");
+  it("M3 markers keep verified provenance and approximate feature meaning", () => {
+    expect(verifiedMapPoints).toHaveLength(5);
+    const water = verifiedMapPoints.filter((p) => p.category === "water");
+    expect(water).toHaveLength(2);
+    for (const point of water) {
       expect(point.coordinateMeaning).toBe("approximate-mapped-feature");
-      expect(isSourceUrl(point.coordinateSourceUrl)).toBe(true);
-      expect(isSourceUrl(point.osmFeatureUrl)).toBe(true);
+      expect(isSourceUrl(point.coordinateSourceUrl ?? "")).toBe(true);
+      expect(isSourceUrl(point.osmFeatureUrl ?? "")).toBe(true);
+    }
+    for (const point of verifiedMapPoints.filter((p) => p.category === "reference")) {
+      expect(point.coordinateMeaning).toBe("approximate-mapped-feature");
+      expect(point.osmFeatureUrl).toBeNull();
     }
   });
 
