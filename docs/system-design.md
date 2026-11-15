@@ -129,3 +129,25 @@ After frontend acceptance, use those notes as input to backend/API design. The d
 - **State lifetime:** no seed posts; only locally created in-memory previews, category filter, in-page review/removal and clipboard-copy consent. Nothing is submitted, persisted, authenticated or publicly posted. Removing one is not remote deletion. No phone/WhatsApp contact, Facebook link, report submission or claim of moderation.
 - **Calendar boundary:** no approved crop calendar, seasons, crop stages, planting dates or source-reviewed windows were supplied; `/calendar` explains the unavailable status without inventing dates. Recommendation/model contract remains deferred.
 - **Tests / later backend:** `tests/m4-community-draft.test.ts`, `tests/m4-community-screen.test.tsx`, `tests/m4-calendar-home.test.tsx` and bilingual/mobile/browser/clipboard acceptance. Future backend needs moderation, consent/privacy, authorization, real data storage, share URL and independently approved agronomic calendar sources.
+
+## M5 frontend hardening and handoff — implemented boundary
+
+- **Shell:** `src/components/navigation/AppFrame.tsx` keeps M1's five-route
+  responsive navigation, adds a persistent workspace `LocaleSwitcher` using the
+  existing M0 provider, displays demo-only status and supports skip-to-main.
+- **Recovery:** `src/app/not-found.tsx` is the bilingual public 404 view using a
+  page-local locale provider. `src/app/(farmer)/(workspace)/error.tsx` is the
+  workspace render-error boundary with a user-requested `reset` retry.
+  Neither endpoint is a business API or a new storage layer.
+- **Testing:** `tests/m5-*.test.*` run in Vitest. `e2e/*.pw.ts` run in Playwright
+  Chromium against locally started **production-built** Next (`test:e2e`),
+  after lint/typecheck/unit tests/build. CI checks on `main` and `feature/**`.
+- **Data boundary:** M2 parcel and M4 community states are React page-memory
+  only; M0 locale choice alone may persist in browser preference storage. M3
+  static sourced dam points remain approximate and do not populate a parcel.
+  M0 audio manifests and unavailable/no-data states remain truthful. M2, M3,
+  M4 scientific, map and community validation remains presentation-only.
+- **Backend/model handoff:** Exact user actions, display fields, availability,
+  provenance, privacy and integration questions are in
+  `docs/frontend/milestone-M5/M5-DEV2.md` §11; no recommendation/API schemas
+  are approved or implemented by M5.

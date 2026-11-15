@@ -453,7 +453,7 @@ describe("M5 accessible workspace shell", () => {
     await user.click(screen.getByRole("button", { name: "Darija" }));
     await waitFor(() => expect(document.documentElement).toHaveAttribute("dir", "rtl"));
     expect(document.documentElement).toHaveAttribute("lang", "ary");
-    expect(screen.getByRole("link", { name: "الخريطة" })).toHaveAttribute("href", "/map");
+    expect(screen.getAllByRole("link", { name: "الخريطة" })[0]).toHaveAttribute("href", "/map");
     expect(screen.getByRole("heading", { name: "Workspace content" })).toBeInTheDocument();
   });
 });
@@ -622,7 +622,7 @@ function monitorAppApiWrites(page: Page): string[] {
 async function openEnglish(page: Page, path: string) {
   await page.goto(path, { waitUntil: "domcontentloaded" });
   // Every M5 workspace page has the shared locale control.
-  await page.getByRole("button", { name: "English" }).first().click();
+  await page.locator("[role=group] button").first().click();
   await expect(page.locator("html")).toHaveAttribute("dir", "ltr");
 }
 
@@ -652,7 +652,7 @@ test("four-step parcel UI validates, preserves draft across languages, and confi
   await page.getByRole("button", { name: "Darija" }).first().click();
   await expect(page.locator("html")).toHaveAttribute("dir", "rtl");
   await expect(page.locator("html")).toHaveAttribute("lang", "ary");
-  await page.getByRole("button", { name: "English" }).first().click();
+  await page.locator("[role=group] button").first().click();
   await expect(page.getByRole("textbox", { name: "Parcel name (optional)" })).toHaveValue("My temporary field");
   await page.getByRole("button", { name: "Next step" }).click();
   await page.getByRole("radio", { name: "Drip irrigation" }).check();
@@ -733,7 +733,7 @@ test("mobile skip link and English/Darija navigation stay keyboard operable", as
   await expect(page.locator("html")).toHaveAttribute("lang", "ary");
   const overflow = await page.evaluate(() => document.documentElement.scrollWidth > window.innerWidth + 1);
   expect(overflow).toBe(false);
-  await page.getByRole("button", { name: "English" }).first().click();
+  await page.locator("[role=group] button").first().click();
   await expect(page.locator("html")).toHaveAttribute("dir", "ltr");
   await page.getByRole("navigation", { name: "Main navigation" }).last()
     .getByRole("link", { name: "Map" }).click();
@@ -1046,6 +1046,8 @@ M3's **source-checked** data originally included two approximate mapped-feature 
 6. **Review/versions:** approve and version the exact model contract and fixtures with scientific reviewer and backend owner *before* writing adapters or routes; specify deployment/availability expectations and the real integration test plan separately from this frontend-only guide.
 
 **Handoff acceptance:** after M5 integration, record the actual `origin/main` SHA, the successful CI run, code/guide parity, manual acceptance results/limitations, and these open decisions. Share `docs/frontend/milestone-M5/M5-DEV2.md` and the real repository commit with the backend/data-science contributors; **do not imply that pending approvals have occurred**.
+
+- **`.nvmrc` encoding fix:** normalized `.nvmrc` to plain ASCII/UTF-8 without BOM (`22.22.2`) so `actions/setup-node@v4` parses `node-version-file` cleanly on Ubuntu runners.
 
 ## 12. Commit verified M5 feature work — no Pull Request
 
