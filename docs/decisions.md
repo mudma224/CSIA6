@@ -4,6 +4,16 @@ Brief dated records of non-obvious tradeoffs (documentation-strategy §1). Newes
 
 ---
 
+## 2026-11-15 — G0 decisions approved; BFF + recommendation UI wired (B3 implementation)
+
+**Decision:** the team approved the DS positions C04–C10/C14 (see `docs/integration/DS-POSITIONS-G0-C04-C14.md`, now APPROVED). The BFF and the real recommendation UI were implemented the same day: `POST /api/v1/recommendations` (Next.js route handler, server-only) maps the M2 form's native values to the science contract (C04 matrix), calls the private FastAPI service through an allowlisted, timed-out, no-redirect gateway, runtime-validates the response union, and `/rotation` renders the honest statuses. The M2 crop step now offers the validated vocabulary (crops.v1.json, "Not declared" default) instead of free text, and seasons follow the campaign grammar.
+
+**Demo policy (approved for this phase):** no auth provider yet (C02/Supabase pending) — the BFF runs rate-limited (30 req/min/IP, in-memory, bounded), persists nothing, sends no coordinates/phone/history to logs, and labels results as real rule-engine output of a demo session. `demo_preview` fixtures remain service-level material, never auto-fallback.
+
+**Consequence:** `/rotation` shows a scored baseline + max 2 alternatives with rule evidence (rank scores, never probabilities), water values only as labeled estimates (skipped with a note when irrigation is unknown), and honest `request_error` / `no_suitable_options` / `model_unavailable` states. The ML observers stay evidence-only (hashes verified at `/ready`). E2E verified locally: form → BFF :3000 → service :8001 → engine → statuses.
+
+---
+
 ## 2026-11-15 — Verified places v1.1: single source of truth merged into the M3 map; /data-preview removed
 
 **Decision:** (1) `src/data/verified-places.v1.json` (renamed from `.geojson` for direct `resolveJsonModule` import; GeoJSON semantics unchanged) becomes the single source of truth for verified map points; `src/data/m3/verifiedPoints.ts` is now a runtime-validating adapter over it. (2) The internal `/data-preview` route, its components and i18n keys were removed; the data files remain committed and the data-contract test still validates them. (3) The M3 map now shows 5 points: 2 `water` (dams with the team's OSM way provenance — way 504108035 / 385347001, Bin El Ouidane coordinates upgraded to the OSM-mapped values) and 3 `reference` (cities); `market` / `supplier` stay honest empty categories.

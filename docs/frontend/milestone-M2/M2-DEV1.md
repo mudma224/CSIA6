@@ -1604,3 +1604,34 @@ Handoff: Only after all gates are verified may DEV1 start M3.
 - **Tests:** unit tests document accepted UI input shapes and errors; component tests document local navigation, RTL and confirmation without a network call. They are **not API contract tests**.
 
 **STOP AFTER M2.** Only `M2-DEV1.md` is generated as the downloadable execution artifact. M3–M5 and backend/model implementations remain separate future milestones.
+
+
+---
+
+## Post-M5 integration addendum (2026-11-15 — G0 approved; B3 wiring implemented)
+
+This historical guide described the M2 form **before** the data-science handoff was approved.
+After the G0 decisions were approved (see `docs/decisions.md`, 2026-11-15), the following
+documented changes were applied to the M2-owned screens on branch `feature/data-crops-map`:
+
+1. **Crop step (step 3):** the two free-text crop fields became `ChoiceGroup` pickers fed by
+   the validated vocabulary `src/data/crops.v1.json` (13 P0 crops + an explicit default
+   "Not declared / I don't know"). Rare crops stay out of the picker per FR-C. Free wording is
+   no longer accepted for crops (contract v0.2: no fuzzy matching).
+2. **Seasons:** non-empty season fields now follow the campaign grammar `YYYY-YYYY`
+   (`invalidSeasonFormat` error; "I don't know" remains allowed for the planned season).
+3. **Review step:** the previous "recommendations unavailable" confirmation was replaced by
+   "See my rotation options", which POSTs the form's native values to the approved BFF
+   (`POST /api/v1/recommendations`), stores the runtime-validated union in
+   `sessionStorage["fb.recommendations.v1"]`, and routes to `/rotation`. Field-coded science
+   errors are mapped back to the crop step; transport failures show honest errors and stay.
+4. **`/rotation`:** renders the contract v0.2 union — scored baseline, max 2 ranked
+   alternatives with rule evidence and labeled water estimates, warnings/notes, and honest
+   `no_suitable_options` / `request_error` / `model_unavailable` states. The intro state keeps
+   the historical "status screen" behavior when nothing was requested.
+
+`tests/m2-parcel-journey.test.tsx`, `tests/m2-parcel-validation.test.ts`,
+`tests/m2-navigation.test.tsx`, `tests/rotation-results.test.tsx`,
+`tests/recommendations-route.test.ts` and `tests/model-gateway.test.ts` cover the new behavior
+(122 unit tests passing at the time of writing). The guide text above is preserved as the
+historical M2 record.

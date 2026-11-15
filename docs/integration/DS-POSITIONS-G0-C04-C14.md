@@ -1,9 +1,9 @@
-# G0 — Data-science positions on decisions C04–C10 / C14 (PROPOSED, awaiting meeting)
+# G0 — Data-science positions on decisions C04–C10 / C14 (APPROVED 2026-11-15)
 
-**Author:** data-science contributor · **Status:** PROPOSED — each line becomes APPROVED /
-AMENDED / REJECTED / DEFERRED at the G0 meeting per `docs/backend/02-INTEGRATION-CONTRACT-DRAFT.md`
-§8. Nothing here unlocks production recommendations by itself. Companion contracts:
-`contracts/model-input.md` + `contracts/model-output.md` v0.2.
+**Author:** data-science contributor · **Status:** APPROVED by the team on 2026-11-15 (see
+`docs/decisions.md`). The BFF (`POST /api/v1/recommendations`) and the `/rotation` results UI
+were implemented on the same basis, with the demo policy recorded in `docs/decisions.md`.
+Companion contracts: `contracts/model-input.md` + `contracts/model-output.md` v0.2.
 
 | ID | Position (DS proposal) | Basis / evidence |
 |---|---|---|
