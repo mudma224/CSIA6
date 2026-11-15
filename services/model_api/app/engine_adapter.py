@@ -1,13 +1,17 @@
 """Adapter between the FastAPI service and the validated rule engine (D2 handoff).
 
-Loads the engine package from the repository, verifies artifact hashes from
-`artifacts/manifest.json`, and exposes a readiness verdict. No raw NASA data, no
-secrets; hashes are computed over committed artifacts only.
+Loads the engine package from the repository, verifies artifact hashes from the
+selected manifest, and exposes a readiness verdict. Two manifest modes:
+  - default (local/full): services/model_api/artifacts/manifest.json (8 entries incl. joblib)
+  - serverless (SCIENCE_SERVERLESS=1, set by api/science.py): manifest.serverless.json
+    covering only the files the rule engine needs (joblibs stay evidence-only, local).
+No raw NASA data, no secrets; hashes are platform-independent (LF-normalized text).
 """
 from __future__ import annotations
 
 import hashlib
 import json
+import os
 import sys
 from pathlib import Path
 
@@ -19,8 +23,10 @@ if str(REPO_ROOT / "science") not in sys.path:
 
 from engine.engine import ENGINE_VERSION, recommend, validate  # noqa: E402  (science/engine)
 
-MANIFEST = json.loads(
-    (REPO_ROOT / "services/model_api/artifacts/manifest.json").read_text(encoding="utf-8"))
+_SERVERLESS = os.environ.get("SCIENCE_SERVERLESS") == "1"
+MANIFEST_PATH = (REPO_ROOT / "services" / "model_api" / "artifacts"
+                 / ("manifest.serverless.json" if _SERVERLESS else "manifest.json"))
+MANIFEST = json.loads(MANIFEST_PATH.read_text(encoding="utf-8"))
 
 
 def _sha256(path: Path) -> str:

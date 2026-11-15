@@ -64,6 +64,21 @@ describe("POST /api/v1/recommendations (BFF)", () => {
     expect(scienceBody.parcel.area_ha).toBe(2.5);
     expect(scienceBody.history[0]).toEqual({ crop_id: "wheat", season: "2024-2025" });
     expect(scienceBody.planned_season).toBe("2025-2026");
+    // no same-origin override outside Vercel; gateway falls back to the loopback default
+    expect(postRecommendation.mock.calls[0][1].baseUrl).toBeUndefined();
+  });
+
+  it("on Vercel, resolves the science function at the deployment's own origin", async () => {
+    process.env.VERCEL = "1";
+    try {
+      postRecommendation.mockResolvedValue({ ok: true, value: RESULTS_UNION });
+      const res = await POST(request(VALID_BODY));
+      expect(res.status).toBe(200);
+      const opts = postRecommendation.mock.calls[0][1];
+      expect(opts.baseUrl).toBe("http://localhost:3000/api/science");
+    } finally {
+      delete process.env.VERCEL;
+    }
   });
 
   it("maps surface irrigation to unknown without inventing flood/basin (C04)", async () => {

@@ -1,0 +1,29 @@
+{
+  "manifest_version": 1,
+  "mode": "serverless",
+  "generated": "2026-11-15",
+  "hashing": "text files hashed after CRLF->LF normalization (platform-independent)",
+  "note": "Serverless function bundle: only the rule-engine files. The joblib observers are evidence-only and are hash-verified on the local run (manifest.json).",
+  "artifacts": [
+    {
+      "path": "science/engine/engine.py",
+      "sha256": "5c3d7400bf00db48254ed2d0c9b9e8b545aa0ad7c2d4cfc92e4aca8dbafa9921",
+      "bytes": 14419
+    },
+    {
+      "path": "science/engine/rules_table.json",
+      "sha256": "27a2942ddf94c750b9f93b0a486a99cdb64760b1877f1cd0098e4f99db513c96",
+      "bytes": 6776
+    },
+    {
+      "path": "science/engine/crops_agronomy.json",
+      "sha256": "5976b1faf55a6786d5ff6636d4a76f773b2aa331e2ee597cd4e0452ef6e036d7",
+      "bytes": 7668
+    },
+    {
+      "path": "src/data/crops.v1.json",
+      "sha256": "e2dc82e51df6ff2953a8f86f47bcbe1d47ff696e194b8fd41aea62690180e7bc",
+      "bytes": 8859
+    }
+  ]
+}

@@ -23,8 +23,8 @@ export type GatewayResult =
   | { ok: true; value: ScienceResponse }
   | { ok: false; failure: GatewayFailure };
 
-function baseUrl(): string {
-  const raw = (process.env.MODEL_API_BASE_URL ?? DEFAULT_BASE_URL).trim();
+function baseUrl(override?: string): string {
+  const raw = (override ?? process.env.MODEL_API_BASE_URL ?? DEFAULT_BASE_URL).trim();
   const url = new URL(raw);
   if (url.protocol === "http:" && !LOOPBACK.test(raw)) {
     throw new Error("MODEL_API_BASE_URL must use HTTPS outside loopback");
@@ -35,9 +35,12 @@ function baseUrl(): string {
   return raw.replace(/\/$/, "");
 }
 
-export async function postRecommendation(body: unknown): Promise<GatewayResult> {
+export async function postRecommendation(
+  body: unknown,
+  opts: { baseUrl?: string } = {},
+): Promise<GatewayResult> {
   const timeoutMs = Number(process.env.MODEL_API_TIMEOUT_MS ?? DEFAULT_TIMEOUT_MS);
-  const target = `${baseUrl()}/internal/v1/recommendations`; // URL validated BEFORE the guarded call
+  const target = `${baseUrl(opts.baseUrl)}/internal/v1/recommendations`; // URL validated BEFORE the guarded call
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), timeoutMs);
   let response: Response;

@@ -125,7 +125,16 @@ export async function POST(request: Request): Promise<NextResponse> {
   }
 
   const scienceRequest = publicToScience(parsed.value);
-  const result = await postRecommendation(scienceRequest);
+  // Science base URL resolution:
+  //   1. explicit MODEL_API_BASE_URL (local uvicorn :8001 or external HTTPS host)
+  //   2. on Vercel: the same deployment's /api/science Python function (same-origin, HTTPS)
+  //   3. fallback: local loopback service (gateway default)
+  const sameOrigin = process.env.VERCEL === "1"
+    ? `${new URL(request.url).origin}/api/science`
+    : undefined;
+  const result = await postRecommendation(scienceRequest, {
+    baseUrl: process.env.MODEL_API_BASE_URL ?? sameOrigin,
+  });
 
   if (!result.ok) {
     const reasonByKind = {

@@ -96,4 +96,22 @@ describe("model gateway transport", () => {
     await expect(postRecommendation({})).rejects.toThrow(/HTTPS outside loopback/);
     expect(vi.mocked(globalThis.fetch).mock.calls.length).toBe(0);
   });
+
+  it("accepts an explicit base URL override (Vercel same-origin /api/science)", async () => {
+    const fetchMock = vi.fn(async () => jsonResponse(RESULTS_UNION));
+    vi.stubGlobal("fetch", fetchMock);
+    const result = await postRecommendation({}, { baseUrl: "https://app.vercel.app/api/science" });
+    expect(result.ok).toBe(true);
+    const [url] = fetchMock.mock.calls[0] as unknown as [string, RequestInit];
+    expect(url).toBe("https://app.vercel.app/api/science/internal/v1/recommendations");
+  });
+
+  it("the override takes precedence over the env var", async () => {
+    process.env.MODEL_API_BASE_URL = "http://127.0.0.1:8001";
+    const fetchMock = vi.fn(async () => jsonResponse(RESULTS_UNION));
+    vi.stubGlobal("fetch", fetchMock);
+    await postRecommendation({}, { baseUrl: "https://override.example.com/api/science" });
+    const [url] = fetchMock.mock.calls[0] as unknown as [string, RequestInit];
+    expect(url).toBe("https://override.example.com/api/science/internal/v1/recommendations");
+  });
 });
