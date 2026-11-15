@@ -1,11 +1,11 @@
 # flaht bladi — Frontend System Design
 
-**Project:** flaht bladi · **GitHub:** `CSIA6` (M0 initialized)  
-**Status:** M0 foundation implemented; later screens, routes and APIs remain proposed. No backend/API exists.
+**Project:** flaht bladi · **GitHub:** `CSIA6` · **Reported baseline:** M0 integrated into `main`  
+**Status:** M0 frontend foundation completed (per team report); M1–M5 are sequential frontend milestones. No backend/API is implemented by this design.
 
 ## 1. Architectural intent
 
-Build a **mobile-first Next.js + React + TypeScript frontend**, styled with Tailwind CSS and the provided HTML/CSS design tokens. Two developers own separate files within each milestone. Build the whole non-recommendation frontend before backend/API development. The recommendation route is a bilingual **unavailable placeholder only** until the data-science handoff.
+Build a **mobile-first Next.js + React + TypeScript frontend**, styled with Tailwind CSS and the provided HTML/CSS design tokens. DEV1 owns M1–M3; DEV2 owns M4–M5, sequentially. No simultaneous milestone development. Build the whole non-recommendation frontend before backend/API development. The recommendation route is a bilingual **unavailable placeholder only** until the data-science handoff.
 
 ```text
 User/browser
@@ -38,11 +38,11 @@ User/browser
 
 ## 3. Proposed route map
 
-Paths are **proposals for M0 confirmation**, not declarations that files exist:
+Routes below show **intended milestones**, not a claim they all exist in the M0 baseline:
 
 | Route | Frontend behavior |
 |---|---|
-| `/` | Welcome, language selection and first-visit audio onboarding |
+| `/` | M0 foundation preview initially; M1 replaces it with bilingual welcome/audio fallback |
 | `/access` | Phone-first demo/test UI; no true OTP |
 | `/home` | Farmer dashboard and accessible navigation |
 | `/parcels/new` | Guided parcel form; optionally view entered demo data |
@@ -56,7 +56,7 @@ On mobile, use a simple navigation model based on Home / Rotation / Map / Commun
 
 ## 4. Proposed repository layout
 
-**M0 actual modules are recorded below.** The broader tree remains a proposal for later milestones.
+**M0 established the base Next.js tree, UI primitives, i18n, audio scaffolding and a foundation preview.** Future routes/modules below remain planned until their owner merges each milestone; verify actual file names against `main` at milestone start.
 
 ```text
 CSIA6/
@@ -66,7 +66,7 @@ CSIA6/
 │   ├── instructions.md
 │   ├── system-design.md
 │   ├── documentation-strategy.md
-│   ├── frontend/                 # future 2 per-milestone execution guides
+│   ├── frontend/                 # one execution guide per current milestone/owner
 │   └── decisions.md              # concise actual decisions (when needed)
 ├── public/
 │   ├── audio/{ary,en}/           # real reviewed recordings only
@@ -87,7 +87,7 @@ CSIA6/
 └── package.json
 ```
 
-Avoid creating a complex structure before it is justified. **File ownership must be declared separately for each milestone.** Shared files (root layout, dependencies, tokens, language manifest) have one temporary owner per PR; the other developer requests changes through review rather than overwriting them.
+Avoid creating a complex structure before it is justified. **File ownership must be declared separately for each milestone.** Shared files (root layout, dependencies, tokens, language manifest) are modified only by the owner of the active milestone; changes must be reflected in that milestone guide and tested before a local merge to `main`.
 
 ## 5. Module boundaries
 
@@ -112,13 +112,11 @@ After frontend acceptance, use those notes as input to backend/API design. The d
 - No secrets in client bundles, no claimed server-side security in frontend-only demos.
 - Map attribution and compliance with tile-provider terms; no bulk tile downloads.
 - Source, timestamp, resolution and uncertainty when showing environmental indicators.
-- Version docs with code changes; integration tests and build gate before merging `integration/mX` into protected `main`.
+- Version docs with each code change; test the local `main` merge candidate before pushing; next milestone starts only after its predecessor is verified on remote `main`.
 
-## M0 implemented foundation (verified at integration)
+## 8. Current M0 baseline and M1 change boundary
 
-- Implemented routes: `/` and `/foundation-preview`, both showing the same internal foundation preview; no farmer-facing M1 screens yet.
-- DEV1: App Router root layout, global approved CSS tokens + Tailwind, toolchain, CI and bootstrap checks.
-- DEV2: `src/i18n/{locale,messages,LocaleProvider}`, `src/components/ui/{Button,Card,TextField}`, `src/components/audio/{clips,AudioHelp}`, `src/features/foundation/FoundationDemo`, Vitest/Testing Library tests.
-- Only `localStorage` language preference and local preview-input UI state exist; both are **frontend-only**. No user authentication, data APIs, real audio recordings, verified map features or model computations.
-- Audio manifest is intentionally empty; a visible transcript/fallback is required. The data-science v0.1 contract remains **proposed** and unimplemented.
-- Proposed route table above is a future plan, not a claim the other routes already exist.
+- **M0 already established (reported):** App Router and global design tokens; `/` and `/foundation-preview` both show a foundation preview; local `LocaleProvider` with `en`/`ary` plus persisted preference; `Button`, `Card`, `TextField`; `AudioHelp` with **empty approved-clip manifests**; Vitest/RTL baseline and CI.
+- **M1 implemented on the verified feature branch (to be integrated):** Route-group locale provider for the farmer journey, actual welcome `/`, demo access `/access`, dashboard `/home`, profile `/profile`, five-destination responsive navigation, and honest unavailable views for incomplete M2–M4 destinations. Keep `/foundation-preview` and M0 tests functioning.
+- **Only local demo UI state:** Phone is checked for input **format only**, never sent or stored as authentication; optional profile display name is in React state only; locale preference uses M0 localStorage. No account, session, authorization, parcel persistence, map data, or recommendation calculation is implied.
+- **Ownership/integration:** DEV1 exclusively implements and locally integrates M1, M2, M3 (in order). DEV2 exclusively implements/integrates M4, M5. Exact feature branches and gates are defined in `docs/frontend-guide.md`.
