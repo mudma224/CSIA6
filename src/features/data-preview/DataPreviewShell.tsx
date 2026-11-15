@@ -41,7 +41,7 @@ export function DataPreviewShell({ crops, places }: DataPreviewShellProps) {
         </Card>
 
         <Card>
-          <h2 className="mb-3 text-xl font-bold text-forest">{t("mapTitle")}</h2>
+          <h2 className="mb-3 text-xl font-bold text-forest">{t("dataPreviewMapTitle")}</h2>
           <PlacesMap places={places} />
           <p className="mt-3 text-sm text-muted">{t("mapNote")}</p>
         </Card>
