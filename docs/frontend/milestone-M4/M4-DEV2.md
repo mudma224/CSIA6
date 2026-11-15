@@ -1237,7 +1237,7 @@ describe("M4 community is a LOCAL demo, not public posting", () => {
     await addExperience(user);
     await user.click(screen.getByRole("button", { name: "Review text to copy" }));
     const copyArea = screen.getByRole("textbox", { name: "Text that can be copied" });
-    expect(copyArea).toHaveValue(expect.stringContaining("Local demo only"));
+    expect((copyArea as HTMLTextAreaElement).value).toContain("Local demo only");
     await user.click(screen.getByRole("button", { name: "Copy reviewed text" }));
     expect(screen.getByRole("alert")).toHaveTextContent("Confirm after reviewing");
     expect(writeText).not.toHaveBeenCalled();

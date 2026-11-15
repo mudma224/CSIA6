@@ -1,17 +1,19 @@
 "use client";
 
 import Link from "next/link";
-import { ArrowUpRight, MapPinned, Sprout, UsersRound } from "lucide-react";
+import { ArrowUpRight, CalendarDays, MapPinned, Sprout, UsersRound } from "lucide-react";
 import { ActionLink } from "@/components/m1/ActionLink";
 import { Card } from "@/components/ui/Card";
 import { useLocale } from "@/i18n/LocaleProvider";
 import { useM2Text } from "@/i18n/m2Messages";
 import { useM3Text } from "@/i18n/m3Messages";
+import { useM4Text } from "@/i18n/m4Messages";
 
 export function HomeScreen() {
   const { t } = useLocale();
-  const tx = useM2Text();
+  const t2 = useM2Text();
   const t3 = useM3Text();
+  const t4 = useM4Text();
   return (
     <div className="space-y-7">
       <header className="space-y-3">
@@ -29,10 +31,10 @@ export function HomeScreen() {
       </Card>
       <div className="grid gap-4 sm:grid-cols-2">
         <Link href="/parcels/new" className="min-h-44 rounded-[var(--radius-lg)] border border-[var(--border)] bg-white p-5 shadow-[var(--shadow-card)] hover:border-leaf">
-          <Sprout aria-hidden="true" className="text-leaf" />
+          <Sprout className="text-leaf" aria-hidden="true" />
           <h2 className="mt-3 text-xl font-bold text-forest">{t("parcelTitle")}</h2>
-          <p className="mt-1 text-sm text-muted">{tx("parcelEntryDescription")}</p>
-          <p className="mt-3 font-bold text-leaf">{tx("startParcel")}</p>
+          <p className="mt-1 text-sm text-muted">{t2("parcelEntryDescription")}</p>
+          <p className="mt-3 font-bold text-leaf">{t2("startParcel")}</p>
           <ArrowUpRight className="mt-3 text-leaf" aria-hidden="true" />
         </Link>
         <Link href="/map" className="min-h-44 rounded-[var(--radius-lg)] border border-[var(--border)] bg-white p-5 shadow-[var(--shadow-card)] hover:border-leaf">
@@ -41,10 +43,16 @@ export function HomeScreen() {
           <p className="mt-1 text-sm text-muted">{t3("homeMapAvailable")}</p>
           <ArrowUpRight className="mt-3 text-leaf" aria-hidden="true" />
         </Link>
-        <Link href="/community" className="min-h-44 rounded-[var(--radius-lg)] border border-[var(--border)] bg-white p-5 shadow-[var(--shadow-card)] hover:border-leaf sm:col-span-2">
+        <Link href="/community" className="min-h-44 rounded-[var(--radius-lg)] border border-[var(--border)] bg-white p-5 shadow-[var(--shadow-card)] hover:border-leaf">
           <UsersRound aria-hidden="true" className="text-leaf" />
           <h2 className="mt-3 text-xl font-bold text-forest">{t("communityTitle")}</h2>
-          <p className="mt-1 text-sm text-muted">{t("communityComing")}</p>
+          <p className="mt-1 text-sm text-muted">{t4("communityIntro")}</p>
+          <ArrowUpRight className="mt-3 text-leaf" aria-hidden="true" />
+        </Link>
+        <Link href="/calendar" className="min-h-44 rounded-[var(--radius-lg)] border border-[var(--border)] bg-white p-5 shadow-[var(--shadow-card)] hover:border-leaf">
+          <CalendarDays aria-hidden="true" className="text-leaf" />
+          <h2 className="mt-3 text-xl font-bold text-forest">{t4("calendarHomeTitle")}</h2>
+          <p className="mt-1 text-sm text-muted">{t4("calendarHomeDescription")}</p>
           <ArrowUpRight className="mt-3 text-leaf" aria-hidden="true" />
         </Link>
       </div>
