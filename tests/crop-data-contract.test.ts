@@ -20,7 +20,7 @@ const crops = JSON.parse(
 };
 
 const places = JSON.parse(
-  readFileSync(resolve(process.cwd(), "src/data/verified-places.v1.geojson"), "utf8"),
+  readFileSync(resolve(process.cwd(), "src/data/verified-places.v1.json"), "utf8"),
 ) as {
   type: string;
   features: Array<{
@@ -30,6 +30,9 @@ const places = JSON.parse(
       name_en: string;
       name_ar: string;
       category: string;
+      coordinate_source_url: string | null;
+      osm_feature_url: string | null;
+      context_source_url: string | null;
       source: string[];
       verified_date: string;
       precision_caveat: string;
@@ -86,6 +89,24 @@ describe("verified places data contract", () => {
       expect(f.properties.verified_date).toBe("2026-11-15");
       expect(f.properties.precision_caveat.trim().length).toBeGreaterThan(0);
     }
+  });
+
+  it("keeps provenance URLs only where verified and null elsewhere", () => {
+    for (const f of places.features) {
+      for (const url of [
+        f.properties.coordinate_source_url,
+        f.properties.osm_feature_url,
+        f.properties.context_source_url,
+      ]) {
+        if (url !== null) {
+          expect(url).toMatch(/^https:\/\//);
+        }
+      }
+    }
+    const dams = places.features.filter((f) => f.properties.category === "water");
+    expect(dams.every((f) => f.properties.osm_feature_url !== null)).toBe(true);
+    const cities = places.features.filter((f) => f.properties.category === "reference");
+    expect(cities.every((f) => f.properties.osm_feature_url === null)).toBe(true);
   });
 
   it("covers both dams and the three reference cities", () => {

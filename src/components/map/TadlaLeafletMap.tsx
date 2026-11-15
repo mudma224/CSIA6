@@ -76,18 +76,20 @@ export function TadlaLeafletMap({
           }}
           eventHandlers={{ click: () => onSelect(point.id) }}
         >
-          <Popup>
+            <Popup>
             <div className="max-w-52 space-y-2 text-sm" dir={locale === "ary" ? "rtl" : "ltr"}>
               <strong className="block">{point.title[locale]}</strong>
               <p>{point.description[locale]}</p>
-              <a
-                className="underline"
-                href={point.osmFeatureUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                {locale === "ary" ? "المصدر فـ OpenStreetMap" : "Source on OpenStreetMap"}
-              </a>
+              {point.osmFeatureUrl && (
+                <a
+                  className="underline"
+                  href={point.osmFeatureUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {locale === "ary" ? "المصدر فـ OpenStreetMap" : "Source on OpenStreetMap"}
+                </a>
+              )}
             </div>
           </Popup>
         </CircleMarker>

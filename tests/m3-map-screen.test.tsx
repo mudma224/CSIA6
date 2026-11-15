@@ -43,6 +43,11 @@ describe("M3 map page", () => {
     expect(screen.getByText(/No individually checked locations/)).toBeInTheDocument();
     await user.click(screen.getByRole("button", { name: "Water infrastructure (2)" }));
     expect(screen.getByRole("button", { name: /Bin El Ouidane Dam/ })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /Ahmed El Hansali Dam/ })).toBeInTheDocument();
+    await user.click(screen.getByRole("button", { name: "Reference places (3)" }));
+    expect(screen.getByRole("button", { name: /Béni Mellal/ })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /Kasba Tadla/ })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /Fquih Ben Salah/ })).toBeInTheDocument();
   });
 
   it("selects source-checked feature details and external directions without using GPS", async () => {
@@ -81,7 +86,7 @@ describe("M3 map page", () => {
   it("preserves honest Home → map and parcel links and unavailable rotation copy", () => {
     render(<LocaleProvider><HomeScreen /></LocaleProvider>);
     expect(screen.getByRole("link", { name: /Tadla map/ })).toHaveAttribute("href", "/map");
-    expect(screen.getByText(/two source-checked water landmarks/)).toBeInTheDocument();
+    expect(screen.getByText(/five source-checked places/)).toBeInTheDocument();
     expect(screen.getByRole("link", { name: /My parcel/ })).toHaveAttribute("href", "/parcels/new");
     expect(screen.getByRole("link", { name: "See recommendation status" })).toHaveAttribute("href", "/rotation");
   });

@@ -4,7 +4,17 @@ Brief dated records of non-obvious tradeoffs (documentation-strategy §1). Newes
 
 ---
 
-## 2026-11-15 — Internal data-verification page at /data-preview
+## 2026-11-15 — Verified places v1.1: single source of truth merged into the M3 map; /data-preview removed
+
+**Decision:** (1) `src/data/verified-places.v1.json` (renamed from `.geojson` for direct `resolveJsonModule` import; GeoJSON semantics unchanged) becomes the single source of truth for verified map points; `src/data/m3/verifiedPoints.ts` is now a runtime-validating adapter over it. (2) The internal `/data-preview` route, its components and i18n keys were removed; the data files remain committed and the data-contract test still validates them. (3) The M3 map now shows 5 points: 2 `water` (dams with the team's OSM way provenance — way 504108035 / 385347001, Bin El Ouidane coordinates upgraded to the OSM-mapped values) and 3 `reference` (cities); `market` / `supplier` stay honest empty categories.
+
+**Rationale:** requested by the team on 2026-11-15 — the two independently produced verified-point layers (data-science deliverable and M3 implementation) described the same two dams; keeping both meant duplicated provenance and drift risk. Merging takes the better provenance for each point (OSM way precision + URLs for dams; official HCP source for Béni Mellal) and adds the 3 cities to the real map with a new `reference` category. Provenance URLs are nullable and rendered only when actually verified — no fabricated links. The preview page had served its validation purpose (data validated by the team on 2026-11-15) and the M2/M3 screens are the right surface for data display.
+
+**Consequence:** crop vocabulary (`crops.v1.json`) is consumed by the M2 parcel form when the team wires it; the data-contract tests (`tests/crop-data-contract.test.ts`) continue to enforce schema, counts and provenance on both files. M3 messages gained `references` / `categoryReference` keys (en+ary); home copy now says "five source-checked places".
+
+---
+
+## 2026-11-15 — Internal data-verification page at /data-preview (superseded 2026-11-15)
 
 **Decision:** the committed data files are rendered inside the app at a standalone route (/data-preview) so the team validates deliverables in the running frontend, and a Leaflet dependency was added for the map view.
 
