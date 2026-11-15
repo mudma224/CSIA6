@@ -14,5 +14,5 @@ pixels MODIS couverts par parcelles: 808 | label unique: 730 | MIXTES (exclus): 
 pixels MODIS conservés pour l'entraînement: 730
 répartition crop (pixels): {"Seasonal Crop": 558, "Trees": 106, "Bare soil": 42, "Trees + Seasonal": 24}
 pixels avec saison unique (Wheat/Alfalfa possibles): 421
-[fichier] C:\Users\Mahmoud\Desktop\Nasa\model\features\parcels_s2_features.csv
-[fichier] C:\Users\Mahmoud\Desktop\Nasa\model\features\modis_pixels_2024_features.csv
+[fichier] C:\Users\Mahmoud\Desktop\Nasa\projet\model\features\parcels_s2_features.csv
+[fichier] C:\Users\Mahmoud\Desktop\Nasa\projet\model\features\modis_pixels_2024_features.csv

@@ -27,9 +27,27 @@ jobs:
         run: npm run test
       - name: Production build
         run: npm run build
+      # The G0-approved recommendation journey is part of the E2E suite: the private
+      # science service must be running locally for the BFF to reach it.
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install science service dependencies
+        run: pip install -r services/model_api/requirements.lock.txt
+      - name: Start private science service (port 8001)
+        run: |
+          PYTHONPATH=services/model_api nohup python -m uvicorn app.main:app \
+            --app-dir services/model_api --host 127.0.0.1 --port 8001 > service.log 2>&1 &
+          for i in $(seq 1 30); do
+            if curl -sf http://127.0.0.1:8001/ready > /dev/null; then
+              echo "science service ready"; exit 0
+            fi
+            sleep 2
+          done
+          echo "science service failed to become ready"; cat service.log; exit 1
       - name: Install Playwright Chromium
         run: npx playwright install --with-deps chromium
-      - name: Browser E2E on production app
+      - name: Browser E2E on production app (full chain incl. recommendations)
         run: npm run test:e2e
         env:
           CI: "true"
