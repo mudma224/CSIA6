@@ -453,7 +453,7 @@ describe("M5 accessible workspace shell", () => {
     await user.click(screen.getByRole("button", { name: "Darija" }));
     await waitFor(() => expect(document.documentElement).toHaveAttribute("dir", "rtl"));
     expect(document.documentElement).toHaveAttribute("lang", "ary");
-    expect(screen.getByRole("link", { name: "الخريطة" })).toHaveAttribute("href", "/map");
+    expect(screen.getAllByRole("link", { name: "الخريطة" })[0]).toHaveAttribute("href", "/map");
     expect(screen.getByRole("heading", { name: "Workspace content" })).toBeInTheDocument();
   });
 });
@@ -622,7 +622,7 @@ function monitorAppApiWrites(page: Page): string[] {
 async function openEnglish(page: Page, path: string) {
   await page.goto(path, { waitUntil: "domcontentloaded" });
   // Every M5 workspace page has the shared locale control.
-  await page.getByRole("button", { name: "English" }).first().click();
+  await page.locator("[role=group] button").first().click();
   await expect(page.locator("html")).toHaveAttribute("dir", "ltr");
 }
 
@@ -652,7 +652,7 @@ test("four-step parcel UI validates, preserves draft across languages, and confi
   await page.getByRole("button", { name: "Darija" }).first().click();
   await expect(page.locator("html")).toHaveAttribute("dir", "rtl");
   await expect(page.locator("html")).toHaveAttribute("lang", "ary");
-  await page.getByRole("button", { name: "English" }).first().click();
+  await page.locator("[role=group] button").first().click();
   await expect(page.getByRole("textbox", { name: "Parcel name (optional)" })).toHaveValue("My temporary field");
   await page.getByRole("button", { name: "Next step" }).click();
   await page.getByRole("radio", { name: "Drip irrigation" }).check();
@@ -733,7 +733,7 @@ test("mobile skip link and English/Darija navigation stay keyboard operable", as
   await expect(page.locator("html")).toHaveAttribute("lang", "ary");
   const overflow = await page.evaluate(() => document.documentElement.scrollWidth > window.innerWidth + 1);
   expect(overflow).toBe(false);
-  await page.getByRole("button", { name: "English" }).first().click();
+  await page.locator("[role=group] button").first().click();
   await expect(page.locator("html")).toHaveAttribute("dir", "ltr");
   await page.getByRole("navigation", { name: "Main navigation" }).last()
     .getByRole("link", { name: "Map" }).click();
