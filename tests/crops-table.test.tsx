@@ -1,4 +1,4 @@
-import { render, screen, within } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 import { LocaleProvider } from "@/i18n/LocaleProvider";
 import { CropsTable, type CropRow } from "@/features/data-preview/CropsTable";
