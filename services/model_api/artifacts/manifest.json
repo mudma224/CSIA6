@@ -2,6 +2,7 @@
   "manifest_version": 1,
   "generated": "2026-11-15",
   "python": "3.14.6",
+  "hashing": "text files hashed after CRLF->LF normalization (platform-independent); binaries as-is",
   "note": "SHA-256 of every artifact the science service relies on; verified at /ready. No raw farm data, no secrets.",
   "artifacts": [
     {
@@ -16,12 +17,12 @@
     },
     {
       "path": "model/artifacts/metrics_all.json",
-      "sha256": "2f13c2fd829be9b0fa211d98ec59faac2a98facced5bae3e8efaadc09eb02bba",
+      "sha256": "d067bdfa7bb150423ffc97bcbea0959a9bedfa75dee90a64dac4443e4fc58236",
       "bytes": 12539
     },
     {
       "path": "model/artifacts/rule_baselines.json",
-      "sha256": "baf98b463eb176c5fb243492d200c33b3c93f00d62934da6b90793c7636e31c3",
+      "sha256": "5e5f48855f27285b4eecb68cfae61b22dbd4696e1d112e5ab2c41df2c32dc162",
       "bytes": 2270
     },
     {
@@ -31,12 +32,12 @@
     },
     {
       "path": "science/engine/rules_table.json",
-      "sha256": "d777c4610bbe54fac17583d3c122e611ec6edb43c4f3d663e953f495d4a45a09",
+      "sha256": "27a2942ddf94c750b9f93b0a486a99cdb64760b1877f1cd0098e4f99db513c96",
       "bytes": 6776
     },
     {
       "path": "science/engine/crops_agronomy.json",
-      "sha256": "8f0d34787ba0e9e62e4fd70976b7b726280ceef39c6a746370288c005367cbf5",
+      "sha256": "5976b1faf55a6786d5ff6636d4a76f773b2aa331e2ee597cd4e0452ef6e036d7",
       "bytes": 7668
     },
     {

@@ -24,10 +24,14 @@ MANIFEST = json.loads(
 
 
 def _sha256(path: Path) -> str:
+    """Platform-independent hash: text files are hashed with LF line endings so a
+    Windows checkout (CRLF) and a Linux checkout (LF) of the same committed bytes
+    verify identically. Binary artifacts (.joblib) are hashed as-is."""
     h = hashlib.sha256()
-    with open(path, "rb") as fh:
-        for chunk in iter(lambda: fh.read(1 << 20), b""):
-            h.update(chunk)
+    data = path.read_bytes()
+    if path.suffix.lower() not in {".joblib", ".png", ".jpg", ".pdf", ".zip"}:
+        data = data.replace(b"\r\n", b"\n")
+    h.update(data)
     return h.hexdigest()
 
 
