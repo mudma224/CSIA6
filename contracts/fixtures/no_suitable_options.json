@@ -1,0 +1,18 @@
+{
+  "fixture_type": "synthetic_contract_test",
+  "fixture_note": "Synthetic union shape for BFF contract tests only — the real engine cannot reach this status with the v0.2 rules; never displayed as a real result.",
+  "status": "no_suitable_options",
+  "contract_version": "0.2",
+  "engine_version": "rule-engine 0.2.0",
+  "reason": "every_rotation_candidate_blocked",
+  "blocked": [
+    {
+      "crop_id": "sugar_beet",
+      "reason_code": "R-BEET-01_blocking",
+      "explanation": "sugar beet after a beet-family crop: beet cyst nematode - 3-5 year non-host break required"
+    }
+  ],
+  "notes": [
+    "baseline_unavailable_no_history"
+  ]
+}

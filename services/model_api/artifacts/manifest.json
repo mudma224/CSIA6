@@ -1,0 +1,48 @@
+{
+  "manifest_version": 1,
+  "generated": "2026-11-15",
+  "python": "3.14.6",
+  "note": "SHA-256 of every artifact the science service relies on; verified at /ready. No raw farm data, no secrets.",
+  "artifacts": [
+    {
+      "path": "model/artifacts/model_binary_wheat_alfalfa.joblib",
+      "sha256": "03261fd822e768b66fd089beb1bdf86a0df9648e86daa91e457574677d0a7cda",
+      "bytes": 2675438
+    },
+    {
+      "path": "model/artifacts/model_s2_parcel_3class.joblib",
+      "sha256": "b49e908c45f0d1412949a8c77c967f3bbc7fef34ec1ba39ab970b156ecce4bfd",
+      "bytes": 5404484
+    },
+    {
+      "path": "model/artifacts/metrics_all.json",
+      "sha256": "2f13c2fd829be9b0fa211d98ec59faac2a98facced5bae3e8efaadc09eb02bba",
+      "bytes": 12539
+    },
+    {
+      "path": "model/artifacts/rule_baselines.json",
+      "sha256": "baf98b463eb176c5fb243492d200c33b3c93f00d62934da6b90793c7636e31c3",
+      "bytes": 2270
+    },
+    {
+      "path": "science/engine/engine.py",
+      "sha256": "5c3d7400bf00db48254ed2d0c9b9e8b545aa0ad7c2d4cfc92e4aca8dbafa9921",
+      "bytes": 14419
+    },
+    {
+      "path": "science/engine/rules_table.json",
+      "sha256": "d777c4610bbe54fac17583d3c122e611ec6edb43c4f3d663e953f495d4a45a09",
+      "bytes": 6776
+    },
+    {
+      "path": "science/engine/crops_agronomy.json",
+      "sha256": "8f0d34787ba0e9e62e4fd70976b7b726280ceef39c6a746370288c005367cbf5",
+      "bytes": 7668
+    },
+    {
+      "path": "src/data/crops.v1.json",
+      "sha256": "e2dc82e51df6ff2953a8f86f47bcbe1d47ff696e194b8fd41aea62690180e7bc",
+      "bytes": 8859
+    }
+  ]
+}

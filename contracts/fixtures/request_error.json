@@ -1,0 +1,15 @@
+{
+  "status": "request_error",
+  "contract_version": "0.2",
+  "error": {
+    "code": "VALIDATION_ERROR",
+    "fields": [
+      {
+        "path": "history[0].crop_id",
+        "code": "UNRECOGNIZED_CROP"
+      }
+    ]
+  },
+  "fixture_type": "real_engine_output",
+  "fixture_note": "Real validation outcome for unrecognized free text (no fuzzy matching)."
+}
