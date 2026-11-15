@@ -1,0 +1,59 @@
+{
+  "purpose": "Baselines de règles (critères v2) : seuils choisis sur le train uniquement, mêmes splits que 02_train_rf.py (seed 42) pour une comparaison équitable.",
+  "binary_wheat_alfalfa": {
+    "split": "GroupShuffleSplit test 25 %, seed 42, même procédure que le ML",
+    "rules": {
+      "R1_summer": {
+        "expression": "Alfalfa si ndvi_summer >= t",
+        "threshold_train": 0.2801,
+        "test_macro_f1": 0.8314
+      },
+      "R2_summer_or_autumn": {
+        "expression": "Alfalfa si ndvi_summer >= t1 OU ndvi_autumn >= t2",
+        "thresholds_train": [
+          0.2339,
+          0.5238
+        ],
+        "test_macro_f1": 0.7717
+      },
+      "majority_class": {
+        "expression": "toujours Wheat",
+        "test_macro_f1": 0.4636
+      }
+    },
+    "ml_random_forest_test_macro_f1": 0.8642,
+    "lecture": "le ML ne se justifie que par son écart avec la meilleure règle simple ; un écart faible signifie qu'une règle transparente suffirait au produit."
+  },
+  "pixel_observer_rule_based": {
+    "split": "GroupShuffleSplit par pixel, test 25 %, seed 42",
+    "rule_tree": [
+      "sol nu       : ndvi_mean < bare_mean ET ndvi_amp < bare_amp",
+      "arbres       : ndvi_min >= tree_min ET ndvi_amp < tree_amp (vert permanent)",
+      "mixte T+S    : ndvi_min >= ts_min (fluctuant mais jamais nu)",
+      "saisonnier   : sinon"
+    ],
+    "thresholds_train": {
+      "bare_mean": 0.275,
+      "bare_amp": 0.3,
+      "tree_min": 0.25,
+      "tree_amp": 0.3,
+      "ts_min": 0.45
+    },
+    "test_macro_f1": 0.4456,
+    "per_class_test_f1": {
+      "Seasonal Crop": 0.8949,
+      "Trees": 0.5238,
+      "Bare soil": 0.3636,
+      "Trees + Seasonal": 0.0
+    },
+    "confusion_files": [
+      "confusion_pixel_observer.png",
+      "confusion_pixel_observer.csv"
+    ]
+  },
+  "honesty_notes": [
+    "tous les seuils sont réglés sur le train ; aucune métrique de test n'a influencé un choix",
+    "les règles B s'appliquent à l'échelle pixel MODIS 230 m (mélange de parcelles inévitable)",
+    "ces baselines ne remplacent pas le scoring agronomique rule-based du produit : elles quantifient l'apport de l'observateur ML et la performance de l'observateur pixel"
+  ]
+}

@@ -1,0 +1,14 @@
+== A. Binaire Wheat/Alfalfa : baselines de règles ==
+train 660 / test 221 (répartition train: {0: 574, 1: 86})
+R1 (ndvi_summer >= 0.2801): macro-F1 train 0.837 -> test 0.831
+R2 (summer>=0.2339 OU autumn>=0.5238): macro-F1 train 0.797 -> test 0.772
+plancher classe majoritaire (Wheat): macro-F1 test 0.464
+== B. Observateur pixel rule-based (4 labels, MODIS 230 m) ==
+pixels train 547 / test 183 (répartition train: {'Seasonal Crop': 416, 'Trees': 83, 'Bare soil': 31, 'Trees + Seasonal': 17})
+seuils retenus (train): {"bare_mean": 0.275, "bare_amp": 0.3, "tree_min": 0.25, "tree_amp": 0.3, "ts_min": 0.45} | macro-F1 train 0.419
+observateur pixel rule-based: macro-F1 test 0.446
+  Seasonal Crop: F1 test = 0.895 (support 142)
+  Trees: F1 test = 0.524 (support 23)
+  Bare soil: F1 test = 0.364 (support 11)
+  Trees + Seasonal: F1 test = 0.000 (support 7)
+[fichier] C:\Users\Mahmoud\Desktop\Nasa\model\artifacts\rule_baselines.json

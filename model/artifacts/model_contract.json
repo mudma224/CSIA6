@@ -1,0 +1,130 @@
+{
+  "models": {
+    "binary_wheat_alfalfa": {
+      "model_file": "model_binary_wheat_alfalfa.joblib",
+      "role": "observateur d'espèces 'Wheat vs Alfalfa' au niveau parcelle (échelle S2) — couche d'observation qui alimente les preuves du scoring rule-based",
+      "input": {
+        "source": "série Sentinel-2 annuelle d'une parcelle (bandes + NDVI éditeur)",
+        "features": {
+          "n_obs": "number",
+          "span_days": "number",
+          "ndvi_mean": "number",
+          "ndvi_max": "number",
+          "ndvi_min": "number",
+          "ndvi_std": "number",
+          "ndvi_amp": "number",
+          "doy_peak": "number",
+          "doy_min": "number",
+          "green_days": "number",
+          "n_cycles": "number",
+          "max_green_rate": "number",
+          "max_sen_rate": "number",
+          "ndvi_auc": "number",
+          "ndvi_winter": "number",
+          "ndvi_spring": "number",
+          "ndvi_summer": "number",
+          "ndvi_autumn": "number",
+          "ndmi_mean": "number",
+          "ndmi_max": "number",
+          "ndmi_min": "number",
+          "ndmi_peak": "number",
+          "b8_peak": "number",
+          "b11_peak": "number",
+          "b4_peak": "number",
+          "b3_peak": "number",
+          "b5_peak": "number",
+          "b7_peak": "number",
+          "b5_mean": "number",
+          "b7_mean": "number",
+          "b12_mean": "number",
+          "b6_mean": "number",
+          "b11_min": "number"
+        },
+        "feature_definitions": "model/01_prepare_features.py (fonctions documentées)"
+      },
+      "output": {
+        "classes": {
+          "0": "Wheat",
+          "1": "Alfalfa"
+        },
+        "decision_threshold": 0.45,
+        "decision_rule": "Alfalfa si proba(OOF-réglé) >= seuil, sinon Wheat",
+        "proba": "score de l'observateur — PAS une probabilité calibrée (spec §4.4)"
+      },
+      "training": {
+        "labels": "ground-truth Ouassanouan et al. 2025, champ 'season' (Tadla 2024)",
+        "n": {
+          "wheat": 765,
+          "alfalfa": 116
+        },
+        "seed": 42,
+        "metrics_file": "metrics_all.json"
+      },
+      "limitations": [
+        "un seul millésime de vérité terrain (2024)",
+        "valide uniquement sur le vocabulaire Wheat/Alfalfa du ground-truth",
+        "l'échelle pixel MODIS n'a PAS passé le critère (macro-F1 0.62) — l'observateur ne s'applique qu'au niveau parcelle"
+      ]
+    },
+    "s2_parcel_3class": {
+      "model_file": "model_s2_parcel_3class.joblib",
+      "role": "observateur de couverture 'Seasonal Crop / Trees / Bare soil' au niveau parcelle (échelle S2) — couche d'observation rule-based pour la classe mixte 'Trees + Seasonal' (retirée du périmètre ML, critère v2)",
+      "input": {
+        "source": "série Sentinel-2 annuelle d'une parcelle (bandes + NDVI éditeur)",
+        "features": {
+          "n_obs": "number",
+          "span_days": "number",
+          "ndvi_mean": "number",
+          "ndvi_max": "number",
+          "ndvi_min": "number",
+          "ndvi_std": "number",
+          "ndvi_amp": "number",
+          "doy_peak": "number",
+          "doy_min": "number",
+          "green_days": "number",
+          "n_cycles": "number",
+          "max_green_rate": "number",
+          "max_sen_rate": "number",
+          "ndvi_auc": "number",
+          "ndvi_winter": "number",
+          "ndvi_spring": "number",
+          "ndvi_summer": "number",
+          "ndvi_autumn": "number",
+          "ndmi_mean": "number",
+          "ndmi_max": "number",
+          "ndmi_min": "number",
+          "ndmi_peak": "number",
+          "b8_peak": "number",
+          "b11_peak": "number",
+          "b4_peak": "number",
+          "b3_peak": "number",
+          "b5_peak": "number",
+          "b7_peak": "number",
+          "b5_mean": "number",
+          "b7_mean": "number",
+          "b12_mean": "number",
+          "b6_mean": "number",
+          "b11_min": "number"
+        },
+        "feature_definitions": "model/01_prepare_features.py (fonctions documentées)"
+      },
+      "output": {
+        "classes": [
+          "Bare soil",
+          "Seasonal Crop",
+          "Trees"
+        ]
+      },
+      "training": {
+        "labels": "ground-truth Ouassanouan et al. 2025, champ 'crop' (Tadla 2024)",
+        "seed": 42,
+        "test_macro_f1": 0.8431,
+        "metrics_file": "metrics_all.json"
+      },
+      "limitations": [
+        "un seul millésime de vérité terrain (2024)",
+        "la classe mixte 'Trees + Seasonal' n'est pas dans le périmètre de ce modèle"
+      ]
+    }
+  }
+}
